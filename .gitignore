@@ -2,10 +2,12 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+AR6/
 # C extensions
+*.DS_Store
+*.gitignore
 *.so
-
+LCI.xlsx
 # Distribution / packaging
 .Python
 build/
