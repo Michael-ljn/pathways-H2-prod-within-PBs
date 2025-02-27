@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10967450.svg)](https://10.5281/zenodo.10967450) <a href="https://www.globh2e.org.au/"><img src="https://img.shields.io/badge/GlobH2e:Funding%20number-IC200100023-blue.svg"/></a>
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10967450.svg)](https://10.5281/zenodo.14938954) <a href="https://www.globh2e.org.au/"><img src="https://img.shields.io/badge/GlobH2e:Funding%20number-IC200100023-blue.svg"/></a>
 
 # **Pathways to global hydrogen production within planetary boundaries**
 
