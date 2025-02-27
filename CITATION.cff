@@ -19,24 +19,6 @@ authors:
 
 title: "Pathways to global hydrogen production within planetary boundaries"
 version: 1.0.0
-doi: 10.0.20.161/zenodo.10967450
-date-released: 2024-12-16
+doi: 10.5281/zenodo.14938954
+date-released: 2025-02-26
 url: "https://github.com/Michael-ljn/pathways-H2-prod-within-PBs"
-# preferred-citation:
-#   type: article
-#   authors:
-#   - family-names: "Lejeune"
-#     given-names: "Mona"
-#     orcid: "https://orcid.org/0000-0000-0000-0000"
-#   - family-names: "Bot"
-#     given-names: "Hew"
-#     orcid: "https://orcid.org/0000-0000-0000-0000"
-#   doi: "10.0000/00000"
-#   journal: "Journal Title"
-#   month: 9
-#   start: 1 # First page number
-#   end: 10 # Last page number
-#   title: "My awesome research software"
-#   issue: 1
-#   volume: 1
-#   year: 2021
