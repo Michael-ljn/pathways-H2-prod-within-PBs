@@ -1,0 +1,33 @@
+cff-version: 1.0.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Lejeune"
+  given-names: "Michaël"
+  orcid: "https://orcid.org/0000-0003-3832-3422"
+- family-names: "Kara"
+  given-names: "Sami"
+  orcid: "https://orcid.org/0000-0000-0000-0000"
+
+title: "Absolute Environmental Sustainability Assessment of the Global Hydrogen Supply: repository"
+version: 1.0.0
+doi: 10.0.20.161/zenodo.10967450
+date-released: 2024-12-16
+url: "https://github.com/Michael-ljn/AESA_global_hydrogen_production"
+# preferred-citation:
+#   type: article
+#   authors:
+#   - family-names: "Lejeune"
+#     given-names: "Mona"
+#     orcid: "https://orcid.org/0000-0000-0000-0000"
+#   - family-names: "Bot"
+#     given-names: "Hew"
+#     orcid: "https://orcid.org/0000-0000-0000-0000"
+#   doi: "10.0000/00000"
+#   journal: "Journal Title"
+#   month: 9
+#   start: 1 # First page number
+#   end: 10 # Last page number
+#   title: "My awesome research software"
+#   issue: 1
+#   volume: 1
+#   year: 2021
