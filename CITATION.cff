@@ -6,13 +6,22 @@ authors:
   orcid: "https://orcid.org/0000-0003-3832-3422"
 - family-names: "Kara"
   given-names: "Sami"
-  orcid: "https://orcid.org/0000-0000-0000-0000"
+  orcid: "https://orcid.org/0000-0001-6132-121X"
+- family-names: "Hauschild"
+  given-names: "Michael Zwicky"
+  orcid: "https://orcid.org/0000-0002-8331-7390"
+- family-names: "Shahrabifarahani"
+  given-names: "Sareh"
+  orcid: "https://orcid.org/0000-0002-9557-2292"
+- family-names: "Daiyan"
+  given-names: "Rhaman"
+  orcid: "https://orcid.org/0000-0002-3543-3944"
 
-title: "Absolute Environmental Sustainability Assessment of the Global Hydrogen Supply: repository"
+title: "Pathways to global hydrogen production within planetary boundaries"
 version: 1.0.0
 doi: 10.0.20.161/zenodo.10967450
 date-released: 2024-12-16
-url: "https://github.com/Michael-ljn/AESA_global_hydrogen_production"
+url: "https://github.com/Michael-ljn/pathways-H2-prod-within-PBs"
 # preferred-citation:
 #   type: article
 #   authors:
