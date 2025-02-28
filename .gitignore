@@ -5,6 +5,7 @@ __pycache__/
 AR6/
 *.drawio
 *.bkp
+main.ipynb
 # C extensions
 *.DS_Store
 *.gitignore
