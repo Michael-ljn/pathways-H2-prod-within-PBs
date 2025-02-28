@@ -3,6 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 AR6/
+*.drawio
+*.bkp
 # C extensions
 *.DS_Store
 *.gitignore
