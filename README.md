@@ -21,3 +21,5 @@
 ---
 
 This repository contains the data and code used to generate the results of the paper "Pathways to global hydrogen production within planetary boundaries"
+
+The current preprint version can be found at [Research Square](https://doi.org/10.21203/rs.3.rs-5917828/v1)
