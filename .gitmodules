@@ -1,0 +1,6 @@
+[submodule "lce.jl"]
+	path = lce.jl
+	url = https://github.com/Michael-ljn/lce.jl.git
+[submodule "planetary-boundaries-visualisation"]
+	path = planetary-boundaries-visualisation
+	url = https://github.com/Michael-ljn/planetary-boundaries-visualisation.git
