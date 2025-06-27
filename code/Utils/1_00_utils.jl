@@ -122,7 +122,7 @@ function wrap_text(str, width=9)
     result = join(lines, "\n")
     return replace(result, r"^\n+" => "")  # Remove leading newlines
 end
-function remove_index(matrix, index_to_remove)
+function remove_index(matrix::Matrix, index_to_remove)
     # Check if the index is valid
     if index_to_remove < 1 || index_to_remove > size(matrix, 1)
         throw(ArgumentError("Index out of bounds"))
@@ -130,6 +130,15 @@ function remove_index(matrix, index_to_remove)
     
     # Remove the specified row and column
     return matrix[[1:index_to_remove-1; index_to_remove+1:end], [1:index_to_remove-1; index_to_remove+1:end]]
+end
+function remove_index(matrix::Vector, index_to_remove)
+    # Check if the index is valid
+    if index_to_remove < 1 || index_to_remove > size(matrix, 1)
+        throw(ArgumentError("Index out of bounds"))
+    end
+    
+    # Remove the specified row and column
+    return matrix[[1:index_to_remove-1; index_to_remove+1:end]]
 end
 
 ### some labels
@@ -181,19 +190,8 @@ catnames=wrap_text.(["Climate  change  Energy  imbalance"
 
 
 
-function print_state(Δ𝐱)
-    catnames_= ["Climate change Energy imbalance"
-                    "Climate change CO2 Concentration"
-                    "Ocean acidification"
-                    "Atmospheric aerosol loading"
-                    "Freshwater use"
-                    "Biogeochemical flows-P"
-                    "Biogeochemical flows-N"
-                    "Stratospheric ozone depletion"
-                    "Land-system change"
-                    "Biosphere Integrity"]
-
-    return [i=>j for (i,j) in zip(catnames_,Δ𝐱)]
+function print_state(Δ𝐱;catnames=catnames_)
+    return [i=>j for (i,j) in zip(catnames,Δ𝐱)]
 
 end
 
