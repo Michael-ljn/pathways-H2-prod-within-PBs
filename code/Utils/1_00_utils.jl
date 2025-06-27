@@ -42,6 +42,67 @@ function matformat(mat)
     return mat1°
 end
 
+function force_interactions(adjacency_matrix;node_size=1500, 
+                            figsize=(9, 9), 
+                            seed=11,
+                            arrowsize=18,
+                            min_source_margin=10,
+                            min_target_margin=25,
+                            aspect="auto",
+                            adjustable="box",
+                            savepath=respath*"SI_Fig5_force_interactions.svg",
+                            disp=true,
+                            dpi=800,
+                            invertxaxis=false,
+                            invertyaxis=false)
+    G = nx.DiGraph()
+    for (i, label) in enumerate(node_labels)
+        G.add_node(i, label=label)
+    end
+    for i in range(1,size(adjacency_matrix)[1],step=1)
+        for j in range(1,size(adjacency_matrix)[1],step=1)
+            if adjacency_matrix[i, j] != 0
+                G.add_edge(i, j, weight=adjacency_matrix[i, j])
+            end
+        end
+    end
+    pos = nx.spring_layout(G, seed=seed, weight="weight")#45,25,22,21,2,3
+    fontproperties=font_prop
+
+    plt.figure(figsize=figsize)
+    nx.draw_networkx_nodes(G, pos, node_size=node_size, node_color="white", edgecolors="black") #node_color='#c2b280',
+    nx.draw_networkx_labels(G, pos, labels=nx.get_node_attributes(G, "label"), font_size=5, font_color="black")
+    edges = G.edges(data=true)
+    edge_colors = [ adjacency_matrix[u, v] < 0 ? "#2CAFFF" : "#EF3B2C" for (u, v, d) in edges ]
+    edge_widths = [d["weight"] * 10 for (u, v, d) in edges]  # Scale edge width for visibility
+
+    nx.draw_networkx_edges(G, pos, edgelist=edges, edge_color=edge_colors, width=edge_widths,
+                        arrows=true, arrowstyle="->", arrowsize=arrowsize, connectionstyle="arc3,rad=0.2",
+                        min_source_margin=min_source_margin,min_target_margin=min_target_margin)
+
+    plt.gca().set_aspect(aspect,adjustable=adjustable)
+
+    if invertxaxis
+        plt.gca().invert_xaxis()
+    end
+    if invertyaxis
+        plt.gca().invert_yaxis()
+    end
+
+    plt.axis("off")
+    plt.tight_layout()
+    plt.savefig(savepath,bbox_inches="tight",transparent=true)
+    plt.savefig(savepath,dpi=dpi,bbox_inches="tight",transparent=true)
+    if disp
+        display(plt.gcf())
+        plt.close("all")
+    else
+        plt.close("all")
+    end
+end
+
+
+
 """
     utility function to wrap text, use a double space to separate words
 """
