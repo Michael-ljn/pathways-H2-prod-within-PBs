@@ -122,24 +122,7 @@ function wrap_text(str, width=9)
     result = join(lines, "\n")
     return replace(result, r"^\n+" => "")  # Remove leading newlines
 end
-function remove_index(matrix::Matrix, index_to_remove)
-    # Check if the index is valid
-    if index_to_remove < 1 || index_to_remove > size(matrix, 1)
-        throw(ArgumentError("Index out of bounds"))
-    end
-    
-    # Remove the specified row and column
-    return matrix[[1:index_to_remove-1; index_to_remove+1:end], [1:index_to_remove-1; index_to_remove+1:end]]
-end
-function remove_index(matrix::Vector, index_to_remove)
-    # Check if the index is valid
-    if index_to_remove < 1 || index_to_remove > size(matrix, 1)
-        throw(ArgumentError("Index out of bounds"))
-    end
-    
-    # Remove the specified row and column
-    return matrix[[1:index_to_remove-1; index_to_remove+1:end]]
-end
+
 
 ### some labels
 ticks= ["Climate  Change"
