@@ -1,5 +1,17 @@
 include("./general_utils/config.jl");
+respath=mkpath(config_respath*"/1_00_total_human_impact/")*"/";
+using InvertedIndices 
 
+
+# Set up matplotlib parameters
+rcParams["ytick.right"] =false
+rcParams["xtick.top"] = false
+rcParams["xtick.bottom"] = true
+rcParams["ytick.direction"] = "out"
+rcParams["ytick.minor.visible"] = false
+rcParams["xtick.direction"] = "out"
+rcParams["xtick.minor.visible"] = false
+rcParams["figure.facecolor"] = "white"
 
 """
     function to convert the interaction matrix into an amplification vector to be directly applied on a control variable vector. Dimensions are rearranged to matach that of the characterisation matrix. The biosphere integrity amplificiation coefficient is the avegrage of the 3 variables. Climate change and biochemical flows have amplification variables duplicated for consistency. 
@@ -42,6 +54,9 @@ function matformat(mat)
     return mat1°
 end
 
+"""
+    Function to plot a graph of interactions
+"""
 function force_interactions(adjacency_matrix;node_size=1500, 
                             figsize=(9, 9), 
                             seed=11,
@@ -55,6 +70,11 @@ function force_interactions(adjacency_matrix;node_size=1500,
                             dpi=800,
                             invertxaxis=false,
                             invertyaxis=false)
+
+    node_labels=catlabels_lade_ticks
+    node_labels[2]= "Biosphere\n Integrity"
+    node_labels=node_labels[Not([3,4])]
+    
     G = nx.DiGraph()
     for (i, label) in enumerate(node_labels)
         G.add_node(i, label=label)
@@ -101,7 +121,12 @@ function force_interactions(adjacency_matrix;node_size=1500,
     end
 end
 
-
+"""
+    function to print the state of the control variables in a readable format
+"""
+function print_state(Δ𝐱;catnames=catnames)
+    return [i=>j for (i,j) in zip(catnames,Δ𝐱)]
+end
 
 """
     utility function to wrap text, use a double space to separate words
@@ -124,68 +149,50 @@ function wrap_text(str, width=9)
 end
 
 
+## indexes of the variables in the interaction matrix from Lade et al. 2020
+
+ᶜᶜ = 1 # Climate Change
+ᴮᴵˡ = 2 # BI Land
+ᴮᴵᶠ = 3 # BI Freshwater
+ᴮᴵᴼ = 4  # BI Ocean
+ˡˢᶜ = 5 # Land System Change
+ᴮᶜᶠ = 6 # Biogeochemical Flows
+ᴼᵃ = 7 # Ocean Acidification
+ᶠʷᵘ = 8 # Freshwater Use
+ᵃᵃˡ = 9 # Aerosol Loading
+ˢᵒᵈ = 10 # Strat. Ozone Depletion
+
+S =[ᶜᶜ ᴮᴵˡ ᴮᴵᶠ ᴮᴵᴼ ˡˢᶜ ᴮᶜᶠ ᴼᵃ ᶠʷᵘ ᵃᵃˡ ˢᵒᵈ] 
+
 ### some labels
-ticks= ["Climate  Change"
-        "BI Land"
-        "BI Freshwater"
-        "BI Ocean"
-        "Land System Change"
-        "Biochemical Flows"
-        "Ocean Acidification"
-        "Freshwater Use"
-        "Aerosol Loading"
-        "Stratospheric Ozone Depletion"];
+catlabels_lade= [ # Labels order from Lade et al. 2020
+                "Climate Change"
+                "BI Land"
+                "BI Freshwater"
+                "BI Ocean"
+                "Land System Change"
+                "Biogeochemical Flows"
+                "Ocean Acidification"
+                "Freshwater Use"
+                "Aerosol Loading"
+                "Strat. Ozone Depletion"]
+
+catlabels_lade_ticks = wrap_text.(catlabels_lade, 9) # as ticks for figures.
+catnames=[ # labels to match the dimensions of AESA categories.
+            "Climate  change  Energy  imbalance"
+            "Climate  change  CO2  Concentration"
+            "Ocean  acidification"
+            "Atmospheric  aerosol  loading"
+            "Freshwater  use"
+            "Biogeochemical  flows-P"
+            "Biogeochemical  flows-N"
+            "Stratospheric  ozone  depletion"
+            "Land-system  change"
+            "Biosphere  Integrity"]
+
+catnames_ticks=wrap_text.(catnames, 9); #as ticks for figures.
 
 
 
-ticks = wrap_text.(ticks, 9)
-;
-catnames_=["Climate  change  Energy  imbalance"
-                    "Climate  change  CO2  Concentration"
-                    "Ocean  acidification"
-                    "Atmospheric  aerosol  loading"
-                    "Freshwater  use"
-                    "Biogeochemical  flows-P"
-                    "Biogeochemical  flows-N"
-                    "Stratospheric  ozone  depletion"
-                    "Land-system  change"
-                    "Biosphere  Integrity"]
-
-node_labels = ["Climate\nchange"
-                "Ocean\nacidification"
-                "Atmospheric\naerosol\nloading"
-                "Freshwater\nuse"
-                "Biochemical\nflows"
-                "Stratospheric\nozone\ndepletion"
-                "Land-system\nchange"
-                "Biosphere\nIntegrity"];
-
-catnames=wrap_text.(["Climate  change  Energy  imbalance"
-                    "Climate  change  CO2  Concentration"
-                    "Ocean  acidification"
-                    "Atmospheric  aerosol  loading"
-                    "Freshwater  use"
-                    "Biogeochemical  flows-P"
-                    "Biogeochemical  flows-N"
-                    "Stratospheric  ozone  depletion"
-                    "Land-system  change"
-                    "Biosphere  Integrity"], 9);
 
 
-
-function print_state(Δ𝐱;catnames=catnames_)
-    return [i=>j for (i,j) in zip(catnames,Δ𝐱)]
-
-end
-
-
-rcParams["ytick.right"] =false
-rcParams["xtick.top"] = false
-rcParams["xtick.bottom"] = true
-rcParams["ytick.direction"] = "out"
-rcParams["ytick.minor.visible"] = false
-rcParams["xtick.direction"] = "out"
-rcParams["xtick.minor.visible"] = false
-rcParams["figure.facecolor"] = "white"
-
-respath=mkpath(config_respath*"/1_00_total_human_impact/")*"/";
