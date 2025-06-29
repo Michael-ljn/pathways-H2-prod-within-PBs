@@ -14,47 +14,6 @@ rcParams["xtick.minor.visible"] = false
 rcParams["figure.facecolor"] = "white"
 
 """
-    function to convert the interaction matrix into an amplification vector to be directly applied on a control variable vector. Dimensions are rearranged to matach that of the characterisation matrix. The biosphere integrity amplificiation coefficient is the avegrage of the 3 variables. Climate change and biochemical flows have amplification variables duplicated for consistency. 
-"""
-function matformat(mat)
-    bi=sum(mat[:,2:4],dims=2)
-    # mat=mat[:,Not(2:4)]
-    mat°=zeros(10,10)
-    mat°[:,1]=mat[:,1]
-    # mat°[:,2]=zeros(10,1)# mat[:,1]
-    mat°[:,3]=mat[:,7]
-    mat°[:,4]=mat[:,9]
-    mat°[:,5]=mat[:,8]
-    mat°[:,6]=mat[:,6]
-    mat°[:,7]=mat[:,6]
-    mat°[:,8]=mat[:,10]
-    mat°[:,9]=mat[:,5]
-    mat°[:,10]=bi
-    bi=mean(mat°[2:4,:],dims=1) # reaggregating biosphere integrity variables as in Lade et al. 2020
-    mat1°=zeros(10,10)
-    mat1°[1,:]=mat°[1,:]
-    mat1°[2,:]=mat°[1,:]
-    mat1°[3,:]=mat°[7,:]
-    mat1°[4,:]=mat°[9,:]
-    mat1°[5,:]=mat°[8,:]
-    mat1°[6,:]=mat°[6,:]
-    mat1°[7,:]=mat°[6,:]
-    mat1°[8,:]=mat°[10,:]
-    mat1°[9,:]=mat°[5,:]
-    mat1°[10,:]=bi
-
-    #removing effect of CO2 concentration on other boundaries since it is done by radiative forcing
-    mat1°[2,2]=mat1°[1,1]
-    mat1°[2,1]=0
-
-    #Set biochemical flows with same interaction coefficients
-    mat1°[6,7]=mat1°[6,6]
-    mat1°[7,6]=mat1°[7,7]
-
-    return mat1°
-end
-
-"""
     Function to plot a graph of interactions
 """
 function force_interactions(adjacency_matrix;node_size=1500, 
@@ -150,21 +109,6 @@ end
 
 
 ## indexes of the variables in the interaction matrix from Lade et al. 2020
-
-ᶜᶜ = 1 # Climate Change
-ᴮᴵˡ = 2 # BI Land
-ᴮᴵᶠ = 3 # BI Freshwater
-ᴮᴵᴼ = 4  # BI Ocean
-ˡˢᶜ = 5 # Land System Change
-ᴮᶜᶠ = 6 # Biogeochemical Flows
-ᴼᵃ = 7 # Ocean Acidification
-ᶠʷᵘ = 8 # Freshwater Use
-ᵃᵃˡ = 9 # Aerosol Loading
-ˢᵒᵈ = 10 # Strat. Ozone Depletion
-
-S =[ᶜᶜ ᴮᴵˡ ᴮᴵᶠ ᴮᴵᴼ ˡˢᶜ ᴮᶜᶠ ᴼᵃ ᶠʷᵘ ᵃᵃˡ ˢᵒᵈ] 
-
-### some labels
 catlabels_lade= [ # Labels order from Lade et al. 2020
                 "Climate Change"
                 "BI Land"
@@ -178,6 +122,22 @@ catlabels_lade= [ # Labels order from Lade et al. 2020
                 "Strat. Ozone Depletion"]
 
 catlabels_lade_ticks = wrap_text.(catlabels_lade, 9) # as ticks for figures.
+
+ᶜᶜ = 1 # Climate Change
+ᴮᴵˡ = 2 # BI Land
+ᴮᴵᶠ = 3 # BI Freshwater
+ᴮᴵᴼ = 4  # BI Ocean
+ˡˢᶜ = 5 # Land System Change
+ᴮᶜᶠ = 6 # Biogeochemical Flows
+ᴼᵃ = 7 # Ocean Acidification
+ᶠʷᵘ = 8 # Freshwater Use
+ᵃᵃˡ = 9 # Aerosol Loading
+ˢᵒᵈ = 10 # Strat. Ozone Depletion
+
+S =[ᶜᶜ ᴮᴵˡ ᴮᴵᶠ ᴮᴵᴼ ˡˢᶜ ᴮᶜᶠ ᴼᵃ ᶠʷᵘ ᵃᵃˡ ˢᵒᵈ]
+
+#### indexes of control variables from AESA
+
 catnames=[ # labels to match the dimensions of AESA categories.
             "Climate  change  Energy  imbalance"
             "Climate  change  CO2  Concentration"
@@ -189,8 +149,67 @@ catnames=[ # labels to match the dimensions of AESA categories.
             "Stratospheric  ozone  depletion"
             "Land-system  change"
             "Biosphere  Integrity"]
-
 catnames_ticks=wrap_text.(catnames, 9); #as ticks for figures.
+
+ᶜᶜ¹° = 1 # Climate Change RF
+ᶜᶜ²° = 2 # Climate Change CO2 Concentration
+ᴼᵃ° = 3 # Ocean Acidification
+ᵃᵃˡ° = 4 # At. Aerosol Loading
+ᶠʷᵘ° = 5 # Freshwater Use
+ᴮᶜᶠᵖ° = 6 # Biogeochemical Flows - Phosphorus
+ᴮᶜᶠⁿ° = 7 # Biogeochemical Flows - Nitrogen
+ˢᵒᵈ° = 8 # Stratospheric Ozone Depletion
+ˡˢᶜ° = 9 # Land System Change   
+ᴮᴵ° = 10 # Biosphere Integrity
+
+
+"""
+    function to convert the interaction matrix into an amplification vector to be directly applied on a control variable vector. Dimensions are rearranged to matach that of the characterisation matrix. The biosphere integrity amplificiation coefficient is the avegrage of the 3 variables. Climate change and biochemical flows have amplification variables duplicated for consistency. 
+"""
+function matformat(mat)
+    b = [ᴮᴵˡ, ᴮᴵᶠ, ᴮᴵᴼ] # indexes of biosphere integrity variables
+    PBs= 10
+    # reordering columns to match the order of the categories in AESA
+    bi=sum(mat[:,b],dims=2)
+    mat°=zeros(PBs,PBs)
+    mat°[:,ᶜᶜ¹°]=mat[:,ᶜᶜ] 
+    # mat°[:,ᶜᶜ²°] is nullyfied so no effect from CO2 emissions to other bondaries is accounted.
+    mat°[:,ᴼᵃ°]=mat[:,ᴼᵃ]
+    mat°[:,ᵃᵃˡ°]=mat[:,ᵃᵃˡ]
+    mat°[:,ᶠʷᵘ°]=mat[:,ᶠʷᵘ]
+    mat°[:,ᴮᶜᶠᵖ°]=mat[:,ᴮᶜᶠ]
+    mat°[:,ᴮᶜᶠⁿ°]=mat[:,ᴮᶜᶠ]
+    mat°[:,ˢᵒᵈ°]=mat[:,ˢᵒᵈ]
+    mat°[:,ˡˢᶜ°]=mat[:,ˡˢᶜ]
+    mat°[:,ᴮᴵ°]=bi
+
+    # reordering columns to match the order of the categories in AESA
+    bi=mean(mat°[b,:],dims=1) # reaggregating biosphere integrity variables as in Lade et al. 2020
+    mat1°=zeros(PBs,PBs)
+    mat1°[ᶜᶜ¹°,:] = mat°[ᶜᶜ,:]
+    mat1°[ᶜᶜ²°,:] = mat°[ᶜᶜ,:]
+    mat1°[ᴼᵃ°,:] = mat°[ᴼᵃ,:]
+    mat1°[ᵃᵃˡ°,:] = mat°[ᵃᵃˡ,:]
+    mat1°[ᶠʷᵘ°,:] = mat°[ᶠʷᵘ,:]
+    mat1°[ᴮᶜᶠᵖ°,:] = mat°[ᴮᶜᶠ,:]
+    mat1°[ᴮᶜᶠⁿ°,:] = mat°[ᴮᶜᶠ,:]
+    mat1°[ˢᵒᵈ°,:] = mat°[ˢᵒᵈ,:]
+    mat1°[ˡˢᶜ°,:] = mat°[ˡˢᶜ,:]
+    mat1°[ᴮᴵ°,:] = bi
+
+    # Removing effect of CO2 concentration on other boundaries since it is done by radiative forcing
+    mat1°[ᶜᶜ²°,ᶜᶜ²°] = mat1°[ᶜᶜ¹°,ᶜᶜ¹°] # same interaction coefficient for CO2 concentration and radiative forcing
+    mat1°[ᶜᶜ²°,ᶜᶜ¹°] = 0 #nullifying the effect of CO2 concentration on radiative forcing
+
+    #Set biochemical flows with same interaction coefficients as they share the common agriculture driver. 
+    mat1°[ᴮᶜᶠᵖ°,ᴮᶜᶠⁿ°]=mat1°[ᴮᶜᶠᵖ°,ᴮᶜᶠᵖ°]
+    mat1°[ᴮᶜᶠⁿ°,ᴮᶜᶠᵖ°]=mat1°[ᴮᶜᶠⁿ°,ᴮᶜᶠⁿ°]
+
+    return mat1°
+end
+
+
+
 
 
 
