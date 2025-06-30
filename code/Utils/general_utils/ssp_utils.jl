@@ -7,15 +7,20 @@ scenario_path="/Users/mickael/Library/CloudStorage/OneDrive-UNSW/Research/Code a
 """
 Function to plot a variable extracted from SSP data
 """
-function plot_var(var::DataFrame;label::String="variable")
-    plt.plot(2025:5:2050, Matrix(var)', label=["SSP1","SSP2", "SSP5"], linewidth=2)
+function plot_var(var::DataFrame;
+    years::StepRange{Int64, Int64}=2025:5:2050,
+    label::String="variable")
+
+    plt.plot(years, Matrix(var)', label=["SSP1","SSP2", "SSP5"], linewidth=2)
     plt.ylabel(label)
     plt.legend(frameon=false)
     display(plt.gcf())
     plt.close("all")
 end
-function plot_var(var::Matrix{Float64};label::String="variable")
-    plt.plot(2025:5:2050, var, label=["SSP1","SSP2", "SSP5"], linewidth=2)
+function plot_var(var::Matrix{Float64};
+    years::StepRange{Int64, Int64}=2025:5:2050,
+    label::String="variable")
+    plt.plot(years, var, label=["SSP1","SSP2", "SSP5"], linewidth=2)
     plt.ylabel(label)
     plt.legend(frameon=false)
     display(plt.gcf())
@@ -40,9 +45,9 @@ function get_vals(Variable::String;
     SSPb=SSPa[:, start_idx:end_idx]
 
     if show
-        plot_var(SSPb[1:3,2:7]; label=Variable*"  "*Unit)
+        plot_var(SSPb; label=Variable*"  "*Unit)
     end
-    return SSPb[1:3,2:7]
+    return SSPb
 end
 
 

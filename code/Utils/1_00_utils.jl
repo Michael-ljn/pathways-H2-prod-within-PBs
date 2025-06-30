@@ -183,7 +183,7 @@ function matformat(mat)
     mat°[:,ˡˢᶜ°]=mat[:,ˡˢᶜ]
     mat°[:,ᴮᴵ°]=bi
 
-    # reordering columns to match the order of the categories in AESA
+    # reordering rows to match the order of the categories in AESA
     bi=mean(mat°[b,:],dims=1) # reaggregating biosphere integrity variables as in Lade et al. 2020
     mat1°=zeros(PBs,PBs)
     mat1°[ᶜᶜ¹°,:] = mat°[ᶜᶜ,:]
