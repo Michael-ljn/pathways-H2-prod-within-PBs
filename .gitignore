@@ -6,8 +6,7 @@
 *.pptx
 # 2_00_direct_human_impact.ipynb
 # 2_01_global_SOS.ipynb
-2_02_allocated_space.ipynb
-2_03_AR6.ipynb
+# 2_02_allocated_space.ipynb
 3_01_scenarios.ipynb
 3_00_PBLCA.ipynb
 3_01_premise.ipynb
