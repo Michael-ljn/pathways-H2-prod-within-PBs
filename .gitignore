@@ -18,7 +18,7 @@ main_utils.jl
 
 lca.jl
 /versionning
-code/planetary-boundaries-visualisation
+# code/planetary-boundaries-visualisation
 code/lce.jl/
 code/.vscode/
 data/temporary/

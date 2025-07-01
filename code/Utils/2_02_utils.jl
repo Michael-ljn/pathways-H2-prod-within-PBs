@@ -9,7 +9,9 @@ rcParams["axes.prop_cycle"] = plt.cycler("color",["#e32f27"
                                                 "#fca082"
                                                 "#3787c0"]);
 
-
+EJ_to_kwh=1/3.6e-12
+LHVH2=33.33 # kWh/kgH2
+EJH2_to_kgH2=1*EJ_to_kwh/LHVH2
 
 
 function add_missingr(model,scn)
@@ -116,6 +118,16 @@ function interpolate_data(df)
 end
 
 function highres(mat,oo)
+    original_years = 2020:5:2060
+    new_years = 2020:1:2060
+    nmat=zeros(length(oo)+3,41)
+    for (index, row) in enumerate(eachrow(mat))
+        itp = interpolate((original_years,), row, Gridded(Linear()))
+        nmat[index,:]= [itp(y) for y in new_years]
+    end
+    return nmat
+end
+function highres(mat)
     original_years = 2020:5:2060
     new_years = 2020:1:2060
     nmat=zeros(length(oo)+3,41)
