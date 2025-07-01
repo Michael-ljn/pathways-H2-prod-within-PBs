@@ -1,0 +1,116 @@
+[![DOI](https://zenodo.org/badge/940091341.svg)](https://doi.org/10.5281/zenodo.14939868) <a href="https://www.globh2e.org.au/"><img src="https://img.shields.io/badge/ARC:Funding%20number-IC200100023-blue.svg"/></a>
+
+# **Pathways to global hydrogen production within planetary boundaries**
+**<div style="text-align: left; font-size: 19px;"> Direct human impact on planetary boundaries**</div>
+
+<div style="text-align: left; font-size: 16px;">Michaël Lejeune<sup>a,b</sup>, Sami Kara<sup>a,b</sup>, Michael Zwicky Hauschild<sup>c,d</sup>, Sareh Sharabifarahni<sup>a</sup>, Rahman Daiyan<sup>b,e</sup></div><br>
+
+<div style="text-align: left; font-size: 13px;"><sup>a</sup>Sustainability in Manufacturing and Life Cycle Engineering Research Group, School of Mechanical and Manufacturing Engineering, the University of New South Wales, 2052, Sydney, Australia</div>
+
+<div style="text-align: left; font-size: 13px;">
+<sup>b</sup>Australian Research Council Training Centre for the Global Hydrogen Economy (GlobH2e), the University of New South Wales, 2052, Sydney, Australia</div>
+
+<div style="text-align: left; font-size: 13px;">
+<sup>c</sup>Centre for Absolute Sustainability, Technical University of Denmark, Kgs, Lyngby, Denmark</div>
+
+<div style="text-align: left; font-size: 13px;">
+<sup>d</sup>Division for Quantitative Sustainability Assessment (QSA), Department of Environmental and Resource Engineering, Technical University of Denmark, Kgs, Lyngby, Denmark</div>
+
+<div style="text-align: left; font-size: 13px;">
+<sup>e</sup>School of Minerals and Energy Engineering, The University of New South Wales, Sydney 2052, Australia</div><br>
+
+<div style="text-align: left; font-size: 13px;"> Code developer and maintainer:<a href="mailto:m.lejeune@unsw.edu.au"> Michaël Lejeune</div></a><br>
+
+# **1. Introduction**
+
+In the [previous notebook](1_00_total_impact.ipynb#1-introduction), we introduced several concepts including the direct human impact represented by the vector $\boldsymbol{d}$ in equations (1). In this notebook we will show how the direct human impact $\boldsymbol{d}$ can be calculated as a result of an absolute environemental sustainability assessment (AESA). It is worth noting that the introduction of some concepts in this notebook is done breifly to focus on the implementation of the methods. It is worth noting that the introduction of some concepts in this notebook is **brief** to focus on the implementation of the methods.
+
+To briefly describe the planetary boundaries framework (PBF), it aims to evaluate the change in the state of the Earth system and whether human activites can be sustainable given some "safe values" of state control variables. These state control variables represent 9 key biophysical systems that are guiding the overall Earth system according to the framework. 
+
+Having introduced briefly what the PBF is about, what is really important in this framework to set is a reference year of assessment. It is typically a year in the pre-industrial era (e.g., 1750). At that specific year the state of a specific state control variable of a biophysical system is taken as reference. Let us call that state control variable at the reference year $X_{z}^0$ and $X_z$ the new state of the control variable for a biophysical system $z$. Note that $z \in S$ and $S$ is the set of all Earth biophysical systems.
+
+Naturally, from there we want to know how $X_{z}^0$ will become $X_z$ given the an anthropogenic impact. Mathematically, we can represent this using Equation 7. 
+
+
+$$
+\Delta X_z =\left|X_z- X_z^0 \right| \tag{7}
+$$
+
+$$
+\Delta X_z^{PB} =\left|X_z^{PB}- X_z^0 \right| \tag{8}
+$$
+
+$$
+\Delta X_z^{D} =\left|X_z^{D}- X_z^0 \right| \tag{9}
+$$
+
+# **2. Computational life cycle assessment background**
+
+In life cycle assessment (LCA) this is precisely what impact assessment attempt to do when developping characterisation factors which we will denote mathematically by $Q_{ze}$ as it would belong to a Matrix $\boldsymbol{Q}$ of $z$ impact categories rows per $e$ elmentary flows colums. $Q_{ze}$ aims to characterise the impact caused on the state of a biophysical system $z$ by the emission/extraction of elementary flows denoted $g_e$. An elementary flow $g_e$ is a unique specie/substance/material/resource that is either emitted/extracted to/from biosphere due to activities in the technosphere. In LCA, the goal is first to obtain the full list of elementary flows interacting with a product system. The sum of all characterised elementary flows gives an impact score in absolute terms that represents the change to a specific environmental category due to the emission/extraction of elementary flows (as done in Equation 8).
+
+
+$$
+\Delta X_z = \sum_e Q_{ze} g_e =\sum_e\sum_jQ_{ze} B_{ej} s_j = \sum_e\sum_j\sum_i Q_{ze} B_{ej} A_{ij}^{-1} f_i \tag{8}
+$$
+
+$$
+\Delta X_z = \sum_j \Lambda_{zj} s_j
+$$
+
+> <span style="color:rgb(0, 112, 110); font-weight: bold;">Summary of terms</span>
+> - $\Delta X_z$ is the change of state of a biophysical system $z$.
+> - $Q_{ze}$ is the characterisation factor of an elementary flow $e$ for a biophysical system $z$.
+> - $B_{ej}$ is the biosphere intervention (emission/extraction) of an elementary flow $e$ per process $j$.
+> - $A_{ij}$ is the technosphere intervention of a reference flow (product) $i$ per process $j$.
+> - $g_e$ is is the biosphere intervention (emission/extraction) of an elementary flow $e$.
+> - $s_j$ is scale of a process $j$ in the technosphere.
+> - $f_i$ is the reference flow (demend for a product) of a process $i$ in the technosphere.
+> - $z$ is the index of a biophysical system.
+> - $e$ is the index of an elementary flow.
+> - $j$ is the index of a process.
+> - $i$ is the index of a product.
+
+
+# **3. Computation of direct Human impact $d$**
+
+To be meaningful, these results compared to another system (benchmarked or not) to assess the relative environmental performance of a product system. For more details in this topic, readers are referred to Hauschild et al.[1]. However, the relative comparison between product systems does not inform in any way whether these are sustainable. For instance, from a climate change perspective, one can find that hydrogen production via steam methane reforming (SMR) is worse than methane pyrolysis. What the LCA study would have proven is that relative to SMR, methane pyrolysis is eco-efficient. When compared to the carrying capacity of the earth, one may find methane pyrolysis far from being sustainable. That is the difference between eco-efficiency and -effectiveness. Eco-effectiveness has been termed for the first time by Bjørn et al.[2] and led to the emergence of the absolute environmental sustainability assessment (AESA) which, unlike traditional LCA, reports results relative to the Earth carrying capacity.
+
+In simple terms, we obtain the direct normalised impact $d_z$ of a product system relative to its dedicated environmental space $\Delta X_z^{PB}$ (see equation 9). In equation 9, $\alpha$ is the allocation factor for the product system in question and $X_z^{PB}$ the state control variable representing the boundary of the biophysical system. This general formulation is used by AESA practitioners to establish if a product system is sustainable based on the condition in equation 10 and typically assuming that equation 6 applies e.g., $d_z=x_z$ and where $x_z$ would be the normalised new state of a control variable after impact.
+
+
+$$
+d_z=x_z=\frac{\Delta X_z}{\alpha \Delta X_z^{PB}}=\frac{\sum_j \Lambda_{zj} s_j}{\alpha  \Delta X_z^{PB}} \tag{9}
+$$
+
+$$0 \leq d_z \leq 1 \tag{10}$$
+
+
+## **4. Linear Algebra formulations**
+
+$$
+\boldsymbol{\Delta X = Qg =QBs = QBA^{-1}f} \tag{9}
+$$
+
+$$
+\boldsymbol{d = \Delta X \oslash \Delta X^{PB}} \tag{9}
+$$
+
+
+In the next notebooks, we will first define the [global safe operating space](2_01_global_SOS.ipynb) vector $\boldsymbol{\Delta X^{PB}}$ for the 9 biophysical systems of the PBF (see equation 11). Then we will focus on the allocation factor $\alpha$ to downscale $\boldsymbol{\Delta X^{PB}}$ for the global production of hydrogen in the [this notebook](2_02_allocated_space.ipynb). Subsequently to this, we will discuss further how to obtain the $\boldsymbol{\Delta X}$ vector from a [prospective planetary boundaries based life cycle assessment](3_00_PBLCA.ipynb).
+
+$$\boldsymbol{\Delta X^{PB} = \left|X^{PB}-X^0\right|} \tag{11} $$
+
+
+$$\boldsymbol{ \oslash  = \left|X^{PB}-X^0\right|} \tag{11} $$
+
+
+
+> <span style="color:rgb(204, 139, 0); font-weight: bold;">Exception on array notation</span><br>
+> In equation 11, we have used bold capital terms for $\boldsymbol{X^{PB}}$ and $\boldsymbol{X^0}$. In the the preceeding paragraph we also used $\boldsymbol{\Delta X}$. This is the only exception we make just to keep consistency with the notations used by Lade et al.†. $\boldsymbol{X^{PB}}$ and $\boldsymbol{X^0}$ both represent vectors of **unnormalised** state control variable values. $\boldsymbol{\Delta X}$ on the other hand represent the vector of **unnormalised** change (impact) on the state control variables.<br>
+>This should not be a problem since there is no expected matrix for unnormalised the state of control variables. For the normalised values, we use $\boldsymbol{x}$ which is also a vector.
+
+# **Reference**
+
+1. Hauschild, M.Z., Rosenbaum, R.K. and Olsen, S.I. (2018) Life Cycle Assessment-  Theory and Practice. Edited by M.Z. Hauschild, R.K. Rosenbaum, and S.I. Olsen. Cham: Springer International Publishing. Available at: https://doi.org/10.1007/978-3-319-56475-3_1.
+ 
+2. Bjørn, A. et al. (2015) ‘Strengthening the Link between Life Cycle Assessment and Indicators for Absolute Sustainability To Support Development within Planetary Boundaries.’, Environmental Science & Technology, 49(11), pp. 6370–6371. Available at: https://doi.org/10.1021/acs.est.5b02106.
