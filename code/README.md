@@ -19,7 +19,16 @@
 <sup>e</sup>School of Minerals and Energy Engineering, The University of New South Wales, Sydney 2052, Australia<br>
 
 ---
-# Simulation code
 
-This repository folder contains the code used to generate the results presented in the paper "Pathways to global hydrogen production within planetary boundaries".
+
+# Table of contents
+1. **[Definition of the total human impact $h$ on planetary boundaries](1_00_total_impact.ipynb)**
+2. **[Defition of the direct human impact](2_00_direct_human_impact.ipynb)**<br>
+    2.1 [Global safe operating space definition](2_01_global_SOS.ipynb)<br>
+    2.1 [Allocated safe operating space for global hydrogen production](2_02_allocated_space.ipynb)<br>
+3. **[Prospective planetary boundaries based life cycle assessment](3_00_PBLCA.ipynb)**<br>
+    3.1 [Premise of the study](3_01_premise.ipynb)<br>
+    3.2 [IAM scenario analysis](3_02_scenarios.ipynb)<br>
+
+
 

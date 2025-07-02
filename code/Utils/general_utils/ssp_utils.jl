@@ -17,7 +17,16 @@ function plot_var(var::DataFrame;
     display(plt.gcf())
     plt.close("all")
 end
-function plot_var(var::Matrix{Float64};
+function plot_var(var::Matrix;
+    years::StepRange{Int64, Int64}=2025:5:2050,
+    label::String="variable")
+    plt.plot(years, var, label=["SSP1","SSP2", "SSP5"], linewidth=2)
+    plt.ylabel(label)
+    plt.legend(frameon=false)
+    display(plt.gcf())
+    plt.close("all")
+end
+function plot_var(var::Matrix;
     years::StepRange{Int64, Int64}=2025:5:2050,
     label::String="variable")
     plt.plot(years, var, label=["SSP1","SSP2", "SSP5"], linewidth=2)
@@ -34,7 +43,7 @@ function get_vals(Variable::String;
                  Region::String="World",
                  SSP=SSP,start_year::String="2020",
                  end_year::String="2100",
-                 show::Bool=false)
+                 show::Bool=false,)
     
     SSPa=filter(row -> row[:Variable] == Variable && row[:Region] == Region, SSP)
     global Scenario=reshape(SSPa[:,"Scenario"], 1, :)

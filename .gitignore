@@ -4,22 +4,32 @@
 *.tmp
 *.pdf
 *.pptx
-# 2_00_direct_human_impact.ipynb
-# 2_01_global_SOS.ipynb
-# 2_02_allocated_space.ipynb
+
+A_matrix_index.csv
+A_matrix.csv
+B_matrix_index.csv
+B_matrix.csv
+
 3_01_scenarios.ipynb
 3_00_PBLCA.ipynb
-3_01_premise.ipynb
+# 3_01_premise.ipynb
 3_02_constraints.ipynb
+
 main.ipynb
 main_utils.jl
 
+passkeys.py
+
 lca.jl
+
 /versionning
 code/lce.jl/
 code/.vscode/
 data/temporary/
-
+data/input/Premise/
+data/data_planetaryboundaries/
+code/export/
+*.log
 # C extensions
 *.DS_Store
 *.gitignore
@@ -30,4 +40,4 @@ LCI.xlsx
 # Distribution / packaging
 .Python
 build/
-
+__pycache__/

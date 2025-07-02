@@ -19,5 +19,7 @@
 <sup>e</sup>School of Minerals and Energy Engineering, The University of New South Wales, Sydney 2052, Australia<br>
 
 ---
+> [!Warning]
+> This is actively being edited for peer review publication. Until a proper v2 realease of the repository is available, all content should be considered as preliminary draft and may containt errors. 
 
-This repository contains the data and code used to generate the results of the paper "Pathways to global hydrogen production within planetary boundaries". The previous preprint version can be found at [Research Square](https://doi.org/10.21203/rs.3.rs-5917828/v1). **Until the v2 release, all documents in this repository can be considered as draft.** 
+This repository contains the data and code used to generate the results of the paper "Pathways to global hydrogen production within planetary boundaries". The previous preprint version can be found at [Research Square](https://doi.org/10.21203/rs.3.rs-5917828/v1). 

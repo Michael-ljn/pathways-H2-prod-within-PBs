@@ -1,10 +1,10 @@
 # # Julia environment settings NOTE: Run this only once
+# ENV["PYTHON"] = "/Users/mickael/anaconda3/envs/ab/bin/python3.11"
 # using Pkg
-# # ENV["PYTHON"] = "/Users/mickael/anaconda3/envs/ab/lib/"
-# ENV["PYTHON"] = "/Users/mickael/anaconda3/envs/geospatial/lib/"
 # Pkg.build("PyCall")
 
-using PyCall
+# using PyCall
+# pr = pyimport("premise")
 using PyPlot
 import Seaborn
 using Plots
@@ -14,10 +14,7 @@ PyPlot.svg(true)
 tkr = pyimport("matplotlib.ticker")
 fm = pyimport("matplotlib.font_manager")
 nx = pyimport("networkx")
-# pyimport_conda("networkx", "networkx")
-
 font_prop = fm.FontProperties(fname="/Users/mickael/Library/Fonts/Harding Text Web Regular Regular.ttf",size=10, weight="bold");
-
 rcParams = PyPlot.PyDict(PyPlot.matplotlib."rcParams")
 rcParams["font.size"] = 8
 rcParams["ytick.right"] = true
@@ -60,9 +57,9 @@ function set_color_palette(pal::Union{Symbol,Vector{String},Vector{Union{Symbol,
     return magma_r
 end
 
-alternate_c="#".*["f94144","f3722c","f8961e","f9844a","f9c74f","90be6d","43aa8b","4d908e","577590","277da1"];
+alternate_c="#".*["f94144","f3722c","f8961e","f9844a","f9c74f","90be6d","43aa8b","4d908e","577590","277da1"]
 set_color_palette(alternate_c[2:end-1],5,set_rcParam=true,show=false,rev=false);
-
+println(alternate_c)
 
 
 # Directories for results and data
