@@ -19,6 +19,6 @@
 
 ---
 > [!CAUTION]<br>
-> This repository is currently being edited/drafted for peer review publication. Until a proper v2 realease of the repository is available, all content should be considered as preliminary draft and may containt errors.
+> This repository is currently being edited/drafted for peer review publication. Until a proper v2 realease of the repository is available, all content should be considered as preliminary draft and may contain errors.
 
 This repository contains the data and code used to generate the results of the paper "Pathways to global hydrogen production within planetary boundaries". The previous preprint version can be found at [Research Square](https://doi.org/10.21203/rs.3.rs-5917828/v1). 

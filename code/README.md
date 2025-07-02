@@ -20,7 +20,7 @@
 ---
 
 > [!CAUTION]<br>
-> This repository is currently being edited/drafted for peer review publication. Until a proper v2 realease of the repository is available, all content should be considered as preliminary draft and may containt errors.
+> This repository is currently being edited/drafted for peer review publication. Until a proper v2 realease of the repository is available, all content should be considered as preliminary draft and may contain errors.
 
 # Table of contents
 1. **[Definition of the total human impact $h$ on planetary boundaries](1_00_total_impact.ipynb)**
