@@ -11,13 +11,14 @@ B_matrix_index.csv
 B_matrix.csv
 # 3_01_premise.ipynb
 
-
+editorial_checklist.ipynb
 main.ipynb
 main_utils.jl
 passkeys.py
 lca.jl
 bookrun.sh
 /versionning
+other/
 code/lce.jl/
 code/.vscode/
 data/temporary/
@@ -31,6 +32,7 @@ code/export/
 *.so
 notes.md
 LCI.xlsx
+storyboards/
 
 # Distribution / packaging
 .Python
