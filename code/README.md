@@ -19,8 +19,14 @@
 <sup>e</sup>School of Minerals and Energy Engineering, The University of New South Wales, Sydney 2052, Australia<br>
 
 ---
-> [!WARNING]
-> This is actively being edited for peer review publication. Until a proper v2 realease of the repository is available, all content should be considered as preliminary draft and may containt errors. 
+
+
+> <span style="color:rgb(204, 4, 4); font-weight: bold; font-size: 15px;">Important note</span><br>
+> <span style="color:rgb(255, 4, 4); ">This repository is currently being edited/drafted for peer review publication. Until a proper v2 realease of the repository is available, all content should be considered as preliminary draft and may containt errors. 
+
+
+> [!CAUTION]<br>
+> Advises about risks or negative outcomes of certain actions.
 
 # Table of contents
 1. **[Definition of the total human impact $h$ on planetary boundaries](1_00_total_impact.ipynb)**
