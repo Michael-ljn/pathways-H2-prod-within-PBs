@@ -3,7 +3,7 @@
 # using Pkg
 # Pkg.build("PyCall")
 
-# using PyCall
+using PyCall
 # pr = pyimport("premise")
 using PyPlot
 import Seaborn
@@ -64,9 +64,9 @@ println(alternate_c)
 
 # Directories for results and data
 
-config_respath = "../results/"
-config_datapath = "../data/"
-
+config_respath = "../Source data/02_results/"
+config_datapath = "../Source data/01_input/"
+config_suprespath = "../Source data/03_additional_data/"
 mkpath(config_respath)
 mkpath(config_datapath)
 ;

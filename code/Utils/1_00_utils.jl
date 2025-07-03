@@ -1,6 +1,7 @@
 include("./general_utils/config.jl");
 respath=mkpath(config_respath*"/1_00_total_human_impact/")*"/";
-using InvertedIndices 
+using InvertedIndices
+using SparseArrays, LinearAlgebra, Statistics
 
 
 # Set up matplotlib parameters
@@ -208,8 +209,54 @@ function matformat(mat)
     return mat1°
 end
 
+#### matrices
 
 
+𝐈=I(10) # Identity matrix
+
+# 𝐁 matrix for Biophysical interactions
+𝐁 = [
+    1.0     0.15    0.38    0.22    0.10    0.19    -0.07   -0.08   0       -0.06   # Climate Change
+    0.22    1       0       0       0       0       0.08    0       0       0       # BI Land
+    0.17    0       1       0       0       0       0.04    0       0       0       # BI Freshwater
+    0.15    0       0       1       0       0       0.06    0       0       0       # BI Ocean
+    0.12    0.8     0.08    0       1       0       0.16    -0.11   0       0       # Land System Change
+    0.04    0.02    1       0.05    0       1       -0.03   0       0.10    0.01    # Biogeochemical Flows
+    0.10    0       0       1       0       0       1       0       0       0       # Ocean Acidification
+    0       0       1       0       0       0       0       1       0       0       # Freshwater Use
+    -0.56   0       0       0       0       0       0       0       1       0       # Aerosol Loading
+    -0.11   0       0       0       0       0       0       0       0       1       # Strat. Ozone Deplet.
+    ]'-𝐈 |>sparse
+
+    
+# 𝐑 matrix for Reactive human-mediated interactions
+𝐑 = [
+    1       0       0       0       0.05        0       0       0       0       0       # Climate Change
+    0       1       0       0       0           0       0       0       0       0       # BI Land
+    0.002   0       1       0       0.003       0       0       0       0       0       # BI Freshwater
+    0       0       0       1       0.02        0       0       0       0       0       # BI Ocean
+    0       0       0       0       1           0       0       0       0       0       # Land System Change
+    0       0       0       0       0           1       0       0       0       0       # Biogeochemical Flows
+    0       0       0       0       0           0       1       0       0       0       # Ocean Acidification
+    0       0       0       0       0           0       0       1       0       0       # Freshwater Use
+    0       0       0       0       0           0       0       0       1       0       # Aerosol Loading
+    0       0       0       0       0           0       0       0       0       1       # Strat. Ozone Deplet.
+    ]'-𝐈 |>sparse
+
+# Define 𝐏 matrix for Parallel human drivers
+𝐏 = [
+    1       0       0       0       0       0       0.40        0.065       0       0       # Climate Change
+    0       1       0       0       0       0       0           0           0       0       # BI Land
+    0       0       1       0       0       0       0           0           0       0       # BI Freshwater
+    0       0       0       1       0       0       0           0           0       0       # BI Ocean
+    0.33    0       0       0       1       1.3     0           0.36        0       0       # Land System Change
+    0.005   0       0       0       0       1       0           0           0       0       # Biogeochemical Flows
+    0       0       0       0       0       0       1           0           0       0       # Ocean Acidification
+    0.018   0       0       0       0       0       0           1           0       0       # Freshwater Use
+    0       0       0       0       0       0       0           0           1       0       # Aerosol Loading
+    0.52    0       0       0       0       0       0           0           0       1       # Strat. Ozone Deplet.
+    ]'-𝐈 |>sparse
+;
 
 
 
