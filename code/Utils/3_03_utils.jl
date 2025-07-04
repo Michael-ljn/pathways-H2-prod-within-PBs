@@ -1,4 +1,6 @@
 using SparseArrays
+using JLD2
+@load "../Source data/02_results/1_00_total_human_impact/data_interaction_matrices.jld2" 𝚪ᵦ 𝚪ₕ catnames_ticks
 
 refrence_flows=[
     "Processed rice (in Mt)"
@@ -67,16 +69,16 @@ elementary_flows=["CO2 (in Mt)"
                 "Occupation, annual crop, irrigated in km2*year"
                 "N-fertilizer use (in Mt)"]
 
-Δxᵖᵇ=[1 # Climate change - energy imbalance in W/m2
-    0.688 # ocean acidification in Ωarag
-    10 # change in biosphere integrity in %
-    39.7 # nitrogen cycle in Tg
-    10 # phosphorus cycle in Tg
-    0.11 # atmospheric aerosol loading in Aerosol optical depth
-    4000 # freshwater use in km3
-    14.5 # stratospheric ozone depletion in Dobson units
-    25 # land-system change in %
-    ];
+Δxᵖᵇ=[  1 # Climate change - energy imbalance in W/m2
+        0.688 # ocean acidification in Ωarag
+        10 # change in biosphere integrity in %
+        39.7 # nitrogen cycle in Tg
+        10 # phosphorus cycle in Tg
+        0.11 # atmospheric aerosol loading in Aerosol optical depth
+        4000 # freshwater use in km3
+        14.5 # stratospheric ozone depletion in Dobson units
+        25 # land-system change in %
+        ];
 
 A=[     1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
         -1.15	1	1	0	0	0	0	0	0	0	0	0	0	0	0	0
@@ -89,7 +91,7 @@ A=[     1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
         -0.345	0	0	0	0	0	-0.12	-0.24	-0.36	-0.48	-0.6	0	-0.1	0	0	1]
 
 
-B=[0	0.061426004	0.121426004	0	0.22664517	0	0	0	0	0	0	0.032078656	0.150472663	0	1.095184111	0.057554402
+B=[ 0	0.061426004	0.121426004	0	0.22664517	0	0	0	0	0	0	0.032078656	0.150472663	0	1.095184111	0.057554402
     0	0.000132928	0.000132928	0	0.000146545	0	0	0	0	0	0	0.001495279	0.00025586	0	0.000915211	6.96793E-05
     0	0.000122852	0.000122852	0	5.66613E-05	0	0	0	0	0	0	1.60393E-05	7.52363E-05	0	0.000547592	2.87772E-05
     0	0.0002	0.0008	0	0	0	0	0	0	0	0	0	0	0	0.0002	0
@@ -97,10 +99,9 @@ B=[0	0.061426004	0.121426004	0	0.22664517	0	0	0	0	0	0	0.032078656	0.150472663	0	
     0	0.4	0.4	0	0	0	0	0	0	0	0	0	0	0	0.002	0
     0	0.3	0.3	0	0	0	0	0	0	0	0	0	0	0	0	0
     0	1000	1000	0	0	0	0	0	0	0	0	0	0	0	0	0
-    0	0.006	0.001	0	0	0	0	0	0	0	0	0	0	0	0	0
-    ]
+    0	0.006	0.001	0	0	0	0	0	0	0	0	0	0	0	0	0 ]
 
-Q=[0.000235	0.00159	0.0464	0	0	0	0	0	0
+Q=[ 0.000235	0.00159	0.0464	0	0	0	0	0	0
     5.46982E-05	0.000150079	0	0	0	0	0	0	0
     0.000203008	0.006902256	0.060496241	0	0	0	0	0.0000007	0
     0	0	0	0	0	0	0	0	1
@@ -134,20 +135,25 @@ c= [10
     10];
 
 F=[ 1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-0	0.0004	0.0004	0	0	0	0	0	0	0	0	0	0.00008	0	0	0
-0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0
-0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0
-0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0
-0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0
-0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0
-0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0
-0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0
-0	0	0	0	0	0	0	0	0	0	0	0	0	0	0.9504	0
-0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1];
-;
-Λ = (Q*B)|>sparse
+    0	0.0004	0.0004	0	0	0	0	0	0	0	0	0	0.00008	0	0	0
+    0	0	0	0	0	0	1	0	0	0	0	0	0	0	0	0
+    0	0	0	0	0	0	0	1	0	0	0	0	0	0	0	0
+    0	0	0	0	0	0	0	0	1	0	0	0	0	0	0	0
+    0	0	0	0	0	0	0	0	0	1	0	0	0	0	0	0
+    0	0	0	0	0	0	0	0	0	0	1	0	0	0	0	0
+    0	0	0	0	0	0	0	0	0	0	0	1	0	0	0	0
+    0	0	0	0	0	0	0	0	0	0	0	0	0	0	1	0
+    0	0	0	0	0	0	0	0	0	0	0	0	0	0	0.9504	0
+    0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1];
+    ;
+
+## Process intensity matrix
+b=[2] # CO2 concentration
+bꜝ= setdiff(1:10, b); #removed from the set
+
+Λ = (Q*B)
 # reordering the arrays
-Λ° = spzeros(Λ.m+1,Λ.n)
+Λ° = zeros(10,length(processes))
 Λ°[1,:] = Λ[1,:] # "Climate change - energy imbalance in W/m2"
 Λ°[3,:] = Λ[2,:] # "Ocean acidification in Ωarag"
 Λ°[10,:] = Λ[3,:] # "Change in biosphere integrity in %"
@@ -157,9 +163,9 @@ F=[ 1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
 Λ°[5,:] = Λ[7,:] # "Freshwater use in km3"
 Λ°[8,:] = Λ[8,:] # "Stratospheric ozone depletion in Dobson units"
 Λ°[9,:] = Λ[9,:] # "Land-system change in %"
-Λ=Λ°
+Λ=Λ°[bꜝ,:]
 
-Δxᵖᵇ° = zeros(Λ°.m)
+Δxᵖᵇ° = zeros(10)
 Δxᵖᵇ°[1] = Δxᵖᵇ[1] # "Climate change - energy imbalance in W/m2"
 Δxᵖᵇ°[3] = Δxᵖᵇ[2] # "Ocean acidification in Ωarag"
 Δxᵖᵇ°[10] = Δxᵖᵇ[3] # "Change in biosphere integrity in %"
@@ -169,4 +175,10 @@ F=[ 1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
 Δxᵖᵇ°[5] = Δxᵖᵇ[7] # "Freshwater use in km3"
 Δxᵖᵇ°[8] = Δxᵖᵇ[8] # "Stratospheric ozone depletion in Dobson units"
 Δxᵖᵇ°[9] = Δxᵖᵇ[9] # "Land-system change in
-Δxᵖᵇ = Δxᵖᵇ°
+Δxᵖᵇ = Δxᵖᵇ°[bꜝ]
+
+# boundaries = boundaries[bꜝ]
+catnames_ticks = catnames_ticks[bꜝ]
+catnames_ticks = replace.(catnames_ticks, r"\n" => " ")
+𝚪ᵦ=𝚪ᵦ[bꜝ,bꜝ]
+𝚪ₕ=𝚪ₕ[bꜝ,bꜝ]
