@@ -5,45 +5,12 @@ scenario_path="/Users/mickael/Library/CloudStorage/OneDrive-UNSW/Research/Code a
 
 
 """
-Function to plot a variable extracted from SSP data
-"""
-function plot_var(var::DataFrame;
-    years::StepRange{Int64, Int64}=2025:5:2050,
-    label::String="variable")
-
-    plt.plot(years, Matrix(var)', label=["SSP1","SSP2", "SSP5"], linewidth=2)
-    plt.ylabel(label)
-    plt.legend(frameon=false)
-    display(plt.gcf())
-    plt.close("all")
-end
-function plot_var(var::Matrix;
-    years::StepRange{Int64, Int64}=2025:5:2050,
-    label::String="variable")
-    plt.plot(years, var, label=["SSP1","SSP2", "SSP5"], linewidth=2)
-    plt.ylabel(label)
-    plt.legend(frameon=false)
-    display(plt.gcf())
-    plt.close("all")
-end
-function plot_var(var::Matrix;
-    years::StepRange{Int64, Int64}=2025:5:2050,
-    label::String="variable")
-    plt.plot(years, var, label=["SSP1","SSP2", "SSP5"], linewidth=2)
-    plt.ylabel(label)
-    plt.legend(frameon=false)
-    display(plt.gcf())
-    plt.close("all")
-end
-
-"""
 Function to get values from SSP data for a specific variable and region
 """
 function get_vals(Variable::String;
                  Region::String="World",
                  SSP=SSP,start_year::String="2020",
-                 end_year::String="2100",
-                 show::Bool=false,)
+                 end_year::String="2100")
     
     SSPa=filter(row -> row[:Variable] == Variable && row[:Region] == Region, SSP)
     global Scenario=reshape(SSPa[:,"Scenario"], 1, :)
@@ -52,10 +19,6 @@ function get_vals(Variable::String;
     start_idx = findfirst(==(start_year), names(SSPa))
     end_idx = findfirst(==(end_year), names(SSP))
     SSPb=SSPa[:, start_idx:end_idx]
-
-    if show
-        plot_var(SSPb; label=Variable*"  "*Unit)
-    end
     return SSPb
 end
 

@@ -147,7 +147,9 @@ F=[ 1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
     0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1];
     ;
 
-## Process intensity matrix
+
+
+    ## Process intensity matrix
 b=[2] # CO2 concentration
 bꜝ= setdiff(1:10, b); #removed from the set
 
@@ -164,6 +166,20 @@ bꜝ= setdiff(1:10, b); #removed from the set
 Λ°[8,:] = Λ[8,:] # "Stratospheric ozone depletion in Dobson units"
 Λ°[9,:] = Λ[9,:] # "Land-system change in %"
 Λ=Λ°[bꜝ,:]
+
+
+Q° = zeros(10,sparse(B).m)
+Q°[1,:] = Q[1,:] # "Climate change - energy imbalance in W/m2"
+Q°[3,:] = Q[2,:] # "Ocean acidification in Ωarag"
+Q°[10,:] = Q[3,:] # "Change in biosphere integrity in %"
+Q°[7,:] = Q[4,:] # "Nitrogen cycle in Tg"
+Q°[6,:] = Q[5,:] # "Phosphorus cycle in Tg"
+Q°[4,:] = Q[6,:] # "Atmospheric aerosol loading in Aerosol optical depth"
+Q°[5,:] = Q[7,:] # "Freshwater use in km3"
+Q°[8,:] = Q[8,:] # "Stratospheric ozone depletion in Dobson units"
+Q°[9,:] = Q[9,:] # "Land-system change in % %"
+Q=Q°[bꜝ,:]
+
 
 Δxᵖᵇ° = zeros(10)
 Δxᵖᵇ°[1] = Δxᵖᵇ[1] # "Climate change - energy imbalance in W/m2"

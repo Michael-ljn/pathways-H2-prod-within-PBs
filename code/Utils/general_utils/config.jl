@@ -4,7 +4,6 @@
 # Pkg.build("PyCall")
 
 using PyCall
-# pr = pyimport("premise")
 using PyPlot
 import Seaborn
 using Plots

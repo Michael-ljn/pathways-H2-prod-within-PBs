@@ -4,11 +4,14 @@
 *.tmp
 *.pdf
 *.pptx
+vscode/
 
 A_matrix_index.csv
 A_matrix.csv
 B_matrix_index.csv
 B_matrix.csv
+.ipynb_checkpoints
+.ipynb_checkpoints/
 
 editorial_checklist.ipynb
 main.ipynb
@@ -26,7 +29,7 @@ code/export/
 *.DS_Store
 *.gitignore
 *.so
-
+text.md
 LCI.xlsx
 storyboards/
 
@@ -34,3 +37,4 @@ storyboards/
 .Python
 _build/
 __pycache__/
+Scenario/

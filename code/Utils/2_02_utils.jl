@@ -13,108 +13,81 @@ EJ_to_kwh=1/3.6e-12
 LHVH2=33.33 # kWh/kgH2
 EJH2_to_kgH2=1*EJ_to_kwh/LHVH2
 
+function add_missingr(model, scn)
+    # Filter AR6a for given model & scenario
+    RM = filter(r -> r[:Model] == model && r[:Scenario] == scn, AR6a)
 
-function add_missingr(model,scn)
-    RM=filter(row -> row[:Model]==model && row[:Scenario]==scn, AR6a)
-    filtered_CCS = filter(row -> contains(row[:Variable], "Carbon Sequestration") && count(==('|'), row[:Variable]) <= 1, RM)
-        new_rowCCS = DataFrame(filtered_CCS[1, :])
-        new_rowCCS[1, :Variable] = "Carbon Sequestration"
-        for col in names(filtered_CCS)[6:end]
-            new_rowCCS[1, Symbol(col)] = sum(filtered_CCS[:, Symbol(col)])
+    # Helper to aggregate rows matching a variable pattern
+    function aggregate(pattern::String, label::String)
+        df = filter(r -> contains(r[:Variable], pattern) && count(==('|'), r[:Variable]) <= 1, RM)
+        isempty(df) && error("add_missingr: No '$label' data for $model, $scn")
+        row = DataFrame(df[1, :])
+        row[1, :Variable] = label
+        for col in names(df)[6:end]
+            row[1, Symbol(col)] = sum(df[:, Symbol(col)])
         end
-
-        filtered_SE = filter(row -> contains(row[:Variable], "Secondary Energy") && count(==('|'), row[:Variable]) <= 1, RM)
-        new_rowSE  = DataFrame(filtered_SE[1, :])
-        new_rowSE[1, :Variable] = "Secondary Energy"
-        for col in names(filtered_SE)[6:end]
-            new_rowSE[1, Symbol(col)] = sum(filtered_SE[:, Symbol(col)])
-        end
-    
-        bioCCSsupply = filter(row -> row[:Variable]=="Carbon Sequestration|CCS|Biomass|Energy|Supply", RM)
-        CCSsupply = filter(row -> row[:Variable]=="Carbon Sequestration|CCS|Fossil|Energy|Supply", RM)
-        Emi_supply = filter(row -> row[:Variable]=="Emissions|CO2|Energy|Supply", RM)
-        Emi = filter(row -> row[:Variable]=="Emissions|CO2", RM)
-        
-        emi_gross_suply= DataFrame(Emi_supply[1, :])
-        emi_gross_suply[1, :Variable] = "Emissions|CO2|Gross|Energy|Supply"
-
-
-        if size(CCSsupply)[1]>0 && size(bioCCSsupply)[1]>0
-            emi_gross_suply[!, 6:end] = Emi_supply[!, 6:end] .+ CCSsupply[!, 6:end] .+ bioCCSsupply[!, 6:end]
-        elseif size(CCSsupply)[1]>0 && size(bioCCSsupply)[1]==0
-            emi_gross_suply[!, 6:end] = Emi_supply[!, 6:end] .+ CCSsupply[!, 6:end]  # .+ bioCCSsupply[!, 6:end]
-        elseif size(CCSsupply)[1]==0 && size(bioCCSsupply)[1]>0
-            emi_gross_suply[!, 6:end] = Emi_supply[!, 6:end] .+ bioCCSsupply[!, 6:end] # .+ CCSsupply[!, 6:end]
-        else 
-            println("No CCS option for SE for the model $model and scenario $scn")
-            emi_gross_suply[!, 6:end] = Emi_supply[!, 6:end]
-        end
-
-        emi_gross= DataFrame(Emi[1, :])
-        emi_gross[1, :Variable] = "Emissions|CO2|Gross"
-        emi_gross[!, 6:end] = Emi[!, 6:end].+ new_rowCCS[!, 6:end]
-
-        if (model,scn)!=("REMIND 2.1", "CEMICS_HotellingConst_1p5")
-            d1=append!(new_rowSE,emi_gross_suply)
-            d2=append!(d1,emi_gross)
-            return append!(AR6a,d2)
-        else
-            d1=append!(emi_gross_suply,emi_gross)
-            return append!(AR6a,d1)
-        end
-        # d3=append!(d2,new_rowCCS)
-end
-function has_missing_values_in_range(row, year_range)
-    for year in year_range
-        if ismissing(row[string(year)])
-            return true
-        end
+        return row
     end
-    return false
+
+    # Aggregate CCS and Secondary Energy
+    new_rowCCS = aggregate("Carbon Sequestration", "Carbon Sequestration")
+    new_rowSE  = aggregate("Secondary Energy",      "Secondary Energy")
+
+    # Extract supply and emissions series
+    lookup(var) = filter(r -> r[:Variable] == var, RM)
+    emi_supply = lookup("Emissions|CO2|Energy|Supply"); isempty(emi_supply) && error("No supply emissions for $model, $scn")
+    emi       = lookup("Emissions|CO2");                  isempty(emi) && error("No total emissions for $model, $scn")
+    fossil    = lookup("Carbon Sequestration|CCS|Fossil|Energy|Supply")
+    bio       = lookup("Carbon Sequestration|CCS|Biomass|Energy|Supply")
+
+    # Build gross supply emissions row
+    gross_sup = DataFrame(emi_supply[1, :])
+    gross_sup[1, :Variable] = "Emissions|CO2|Gross|Energy|Supply"
+    # Sum supply emissions with any available CCS components
+    vals = copy(emi_supply[!, 6:end])
+    if !isempty(fossil)
+        vals .= vals .+ fossil[!, 6:end]
+    end
+    if !isempty(bio)
+        vals .= vals .+ bio[!, 6:end]
+    end
+    gross_sup[!, 6:end] = vals
+
+    # Build total gross emissions row
+    gross_tot = DataFrame(emi[1, :]); gross_tot[1, :Variable] = "Emissions|CO2|Gross"
+    gross_tot[!, 6:end] = emi[!, 6:end] .+ new_rowCCS[!, 6:end]
+
+    # Assemble rows in correct order, handling special case
+    rows = (model, scn) != ("REMIND 2.1", "CEMICS_HotellingConst_1p5") ? [new_rowSE, gross_sup, gross_tot] : [gross_sup, gross_tot]
+    return append!(AR6a, vcat(rows...))
 end
+
+
+# Simplified interpolate_data: linear fill of 5-year steps from 10-year data
 function interpolate_data(df)
+    years10 = 2020:10:2060
+    years5  = 2020:5:2060
+    cols10  = string.(years10)
+    cols5   = string.(years5)
 
-    years_5_step = 2020:5:2060
-    years_10_step = 2020:10:2060
-    cols_in_range = [string(year) for year in years_5_step if string(year) in names(AR6a)]
-    df5=df[:,cols_in_range]|>dropmissing
+    # Rows with full 5-year data
+    df5 = dropmissing(select(df, cols5))
 
+    # Rows that need interpolation based on 10-year series
+    df_gap = filter(r -> any(ismissing, r[cols10]), df)
 
-    year_range5 = 2025:5:2055
-    df_filtered = filter(row -> has_missing_values_in_range(row, year_range5), df)
+    # Perform interpolation for each gap row
+    interpolated = [
+        interpolate((years10,), collect(r[cols10]), Gridded(Linear()))(years5)
+        for r in eachrow(df_gap)
+    ]
 
-    # Create a matrix for interpolation
-    
-    df_interpolated = DataFrame()
-
-    # Iterate over each row of the DataFrame
-    for i in 1:size(df_filtered, 1)
-        # Extract the 10-year step data for the current row
-        row_data = df_filtered[i, string.(years_10_step)]
-        values = collect(row_data)
-
-        # Create an interpolation function
-        itp = interpolate((years_10_step,), values, Gridded(Linear()))
-
-        # Generate the new 5-year step data
-        values_5_step = itp.(years_5_step)
-
-        # Create a new DataFrame with the interpolated data
-        df_row_interpolated = DataFrame(Row = i, Year = years_5_step, Value = values_5_step)
-
-        # Add the interpolated data to the results DataFrame
-        df_interpolated = vcat(df_interpolated, df_row_interpolated)
-    end
-    # # Reshape the DataFrame back to the original format
-
-    if size(df_interpolated)[1]>0
-        df_wide = unstack(df_interpolated, :Year, :Value; combine = first)
-        return vcat(df_wide[:,2:end],df5)|>Matrix 
+    if !isempty(interpolated)
+        df_interp = DataFrame(interpolated, Symbol.(cols5))
+        return Matrix(vcat(df_interp, df5))
     else
-        df_wide = df5
-        return df5|>Matrix
+        return Matrix(df5)
     end
-   
 end
 
 function highres(mat,oo)
