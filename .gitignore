@@ -5,6 +5,9 @@
 *.pdf
 *.pptx
 vscode/
+FAIR/
+IPCC AR6 scenarios/
+Premise scenarios/
 
 A_matrix_index.csv
 A_matrix.csv

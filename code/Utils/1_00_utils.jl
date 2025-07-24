@@ -15,6 +15,64 @@ rcParams["xtick.minor.visible"] = false
 rcParams["figure.facecolor"] = "white"
 
 """
+    function to print the state of the control variables in a readable format
+"""
+function print_state(Δ𝐱;catnames=catnames)
+    return [i=>j for (i,j) in zip(catnames,Δ𝐱)]
+end
+
+"""
+    utility function to wrap text, use a double space to separate words
+"""
+function wrap_text(str, width=9)
+    words = split(str)
+    lines = String[]
+    current_line = ""
+    for word in words
+        if length(current_line) + length(word) > width
+            push!(lines, strip(current_line))
+            current_line = word
+        else
+            current_line = current_line * " " * word
+        end
+    end
+    push!(lines, strip(current_line))
+    result = join(lines, "\n")
+    return replace(result, r"^\n+" => "")  # Remove leading newlines
+end
+
+
+## indexes of the variables in the interaction matrix from Lade et al. 2020
+catlabels_lade= [ # Labels order from Lade et al. 2020
+                "Climate Change"
+                "BI Land"
+                "BI Freshwater"
+                "BI Ocean"
+                "Land System Change"
+                "Biogeochemical Flows"
+                "Ocean Acidification"
+                "Freshwater Use"
+                "Aerosol Loading"
+                "Strat. Ozone Depletion"]
+
+ᶜᶜ = 1 # Climate Change
+ᴮᴵˡ = 2 # BI Land
+ᴮᴵᶠ = 3 # BI Freshwater
+ᴮᴵᴼ = 4  # BI Ocean
+ˡˢᶜ = 5 # Land System Change
+ᴮᶜᶠ = 6 # Biogeochemical Flows
+ᴼᵃ = 7 # Ocean Acidification
+ᶠʷᵘ = 8 # Freshwater Use
+ᵃᵃˡ = 9 # Aerosol Loading
+ˢᵒᵈ = 10 # Strat. Ozone Depletion
+
+catlabels_lade_ticks = wrap_text.(catlabels_lade, 9) # as ticks for figures.
+
+s= 1:1:10 # This represent the set of all planetary boundaries
+bⁿ=[3,4] # Removing unnecessary node labels for the force interaction figure.
+bꜝ = setdiff(s, bⁿ) # Creation of a a complementary set without the set bⁿ
+
+"""
     Function to plot a graph of interactions
 """
 function force_interactions(adjacency_matrix;node_size=1500, 
@@ -29,11 +87,11 @@ function force_interactions(adjacency_matrix;node_size=1500,
                             disp=true,
                             dpi=800,
                             invertxaxis=false,
-                            invertyaxis=false)
+                            invertyaxis=false,
+                            labels=catlabels_lade_ticks[bꜝ])
 
-    node_labels=catlabels_lade_ticks
+    node_labels=labels
     node_labels[2]= "Biosphere\n Integrity"
-    node_labels=node_labels[Not([3,4])]
     
     G = nx.DiGraph()
     for (i, label) in enumerate(node_labels)
@@ -81,59 +139,6 @@ function force_interactions(adjacency_matrix;node_size=1500,
     end
 end
 
-"""
-    function to print the state of the control variables in a readable format
-"""
-function print_state(Δ𝐱;catnames=catnames)
-    return [i=>j for (i,j) in zip(catnames,Δ𝐱)]
-end
-
-"""
-    utility function to wrap text, use a double space to separate words
-"""
-function wrap_text(str, width=9)
-    words = split(str)
-    lines = String[]
-    current_line = ""
-    for word in words
-        if length(current_line) + length(word) > width
-            push!(lines, strip(current_line))
-            current_line = word
-        else
-            current_line = current_line * " " * word
-        end
-    end
-    push!(lines, strip(current_line))
-    result = join(lines, "\n")
-    return replace(result, r"^\n+" => "")  # Remove leading newlines
-end
-
-
-## indexes of the variables in the interaction matrix from Lade et al. 2020
-catlabels_lade= [ # Labels order from Lade et al. 2020
-                "Climate Change"
-                "BI Land"
-                "BI Freshwater"
-                "BI Ocean"
-                "Land System Change"
-                "Biogeochemical Flows"
-                "Ocean Acidification"
-                "Freshwater Use"
-                "Aerosol Loading"
-                "Strat. Ozone Depletion"]
-
-catlabels_lade_ticks = wrap_text.(catlabels_lade, 9) # as ticks for figures.
-
-ᶜᶜ = 1 # Climate Change
-ᴮᴵˡ = 2 # BI Land
-ᴮᴵᶠ = 3 # BI Freshwater
-ᴮᴵᴼ = 4  # BI Ocean
-ˡˢᶜ = 5 # Land System Change
-ᴮᶜᶠ = 6 # Biogeochemical Flows
-ᴼᵃ = 7 # Ocean Acidification
-ᶠʷᵘ = 8 # Freshwater Use
-ᵃᵃˡ = 9 # Aerosol Loading
-ˢᵒᵈ = 10 # Strat. Ozone Depletion
 
 S =[ᶜᶜ ᴮᴵˡ ᴮᴵᶠ ᴮᴵᴼ ˡˢᶜ ᴮᶜᶠ ᴼᵃ ᶠʷᵘ ᵃᵃˡ ˢᵒᵈ]
 
@@ -150,6 +155,8 @@ catnames=[ # labels to match the dimensions of AESA categories.
             "Stratospheric  ozone  depletion"
             "Land-system  change"
             "Biosphere  Integrity"]
+
+
 catnames_ticks=wrap_text.(catnames, 9); #as ticks for figures.
 
 ᶜᶜ¹° = 1 # Climate Change RF
@@ -165,7 +172,7 @@ catnames_ticks=wrap_text.(catnames, 9); #as ticks for figures.
 
 
 """
-    function to convert the interaction matrix into an amplification vector to be directly applied on a control variable vector. Dimensions are rearranged to matach that of the characterisation matrix. The biosphere integrity amplificiation coefficient is the avegrage of the 3 variables. Climate change and biochemical flows have amplification variables duplicated for consistency. 
+function to convert the interaction matrix into an amplification vector to be directly applied on a control variable vector. Dimensions are rearranged to matach that of the characterisation matrix. The biosphere integrity amplificiation coefficient is the avegrage of the 3 variables. Climate change and biochemical flows have amplification variables duplicated for consistency. 
 """
 function matformat(mat)
     b = [ᴮᴵˡ, ᴮᴵᶠ, ᴮᴵᴼ] # indexes of biosphere integrity variables
@@ -174,7 +181,7 @@ function matformat(mat)
     bi=sum(mat[:,b],dims=2)
     mat°=zeros(PBs,PBs)
     mat°[:,ᶜᶜ¹°]=mat[:,ᶜᶜ] 
-    # mat°[:,ᶜᶜ²°] is nullyfied so no effect from CO2 emissions to other bondaries is accounted.
+    mat°[:,ᶜᶜ²°]=mat[:,ᶜᶜ]
     mat°[:,ᴼᵃ°]=mat[:,ᴼᵃ]
     mat°[:,ᵃᵃˡ°]=mat[:,ᵃᵃˡ]
     mat°[:,ᶠʷᵘ°]=mat[:,ᶠʷᵘ]
@@ -188,7 +195,7 @@ function matformat(mat)
     bi=mean(mat°[b,:],dims=1) # reaggregating biosphere integrity variables as in Lade et al. 2020
     mat1°=zeros(PBs,PBs)
     mat1°[ᶜᶜ¹°,:] = mat°[ᶜᶜ,:]
-    mat1°[ᶜᶜ²°,:] = mat°[ᶜᶜ,:]
+    #mat1°[ᶜᶜ²°,:] = mat°[ᶜᶜ,:] # is nullyfied so no effect from CO2 emissions to other bondaries is accounted.
     mat1°[ᴼᵃ°,:] = mat°[ᴼᵃ,:]
     mat1°[ᵃᵃˡ°,:] = mat°[ᵃᵃˡ,:]
     mat1°[ᶠʷᵘ°,:] = mat°[ᶠʷᵘ,:]
@@ -200,7 +207,7 @@ function matformat(mat)
 
     # Removing effect of CO2 concentration on other boundaries since it is done by radiative forcing
     mat1°[ᶜᶜ²°,ᶜᶜ²°] = mat1°[ᶜᶜ¹°,ᶜᶜ¹°] # same interaction coefficient for CO2 concentration and radiative forcing
-    mat1°[ᶜᶜ²°,ᶜᶜ¹°] = 0 #nullifying the effect of CO2 concentration on radiative forcing
+    mat1°[ᶜᶜ¹°,ᶜᶜ²°] = 0 #nullifying the effect of CO2 concentration on radiative forcing
 
     #Set biochemical flows with same interaction coefficients as they share the common agriculture driver. 
     mat1°[ᴮᶜᶠᵖ°,ᴮᶜᶠⁿ°]=mat1°[ᴮᶜᶠᵖ°,ᴮᶜᶠᵖ°]
@@ -214,7 +221,7 @@ end
 
 𝐈=I(10) # Identity matrix
 
-# 𝐁 matrix for Biophysical interactions
+# 𝐁 matrix for Biophysical interactions, # NOTE: Matrix arranged as 𝐁z⁺z, effect of columns on rows
 𝐁 = [
     1.0     0.15    0.38    0.22    0.10    0.19    -0.07   -0.08   0       -0.06   # Climate Change
     0.22    1       0       0       0       0       0.08    0       0       0       # BI Land
@@ -228,8 +235,11 @@ end
     -0.11   0       0       0       0       0       0       0       0       1       # Strat. Ozone Deplet.
     ]'-𝐈 |>sparse
 
+# NOTE: Matrix arranged as 𝐁z⁺z, effect of columns on rows
+# 𝐁 = matformat(𝐁)'|>sparse # NOTE: Matrix arranged as 𝐁zz⁺, effect of rows on columns
     
-# 𝐑 matrix for Reactive human-mediated interactions
+
+# 𝐑 matrix for Reactive human-mediated interactions # NOTE: Matrix arranged as 𝐑z⁺z, effect of columns on rows
 𝐑 = [
     1       0       0       0       0.05        0       0       0       0       0       # Climate Change
     0       1       0       0       0           0       0       0       0       0       # BI Land
@@ -243,7 +253,10 @@ end
     0       0       0       0       0           0       0       0       0       1       # Strat. Ozone Deplet.
     ]'-𝐈 |>sparse
 
-# Define 𝐏 matrix for Parallel human drivers
+# NOTE: Matrix arranged as 𝐑z⁺z, effect of columns on rows
+# 𝐑 = matformat(𝐑)'|>sparse # NOTE: Matrix arranged as 𝐑zz⁺, effect of rows on columns
+
+# Define 𝐏 matrix for Parallel human drivers, # NOTE: Matrix arranged as 𝐏z⁺z, effect of columns on rows
 𝐏 = [
     1       0       0       0       0       0       0.40        0.065       0       0       # Climate Change
     0       1       0       0       0       0       0           0           0       0       # BI Land
@@ -255,7 +268,12 @@ end
     0.018   0       0       0       0       0       0           1           0       0       # Freshwater Use
     0       0       0       0       0       0       0           0           1       0       # Aerosol Loading
     0.52    0       0       0       0       0       0           0           0       1       # Strat. Ozone Deplet.
-    ]'-𝐈 |>sparse
+    ]'-𝐈 |>sparse # NOTE: Matrix arranged as 𝐏z⁺z, effect of columns on rows
+
+
+# NOTE: Matrix arranged as 𝐏z⁺z, effect of columns on rows
+
+# 𝐏 = matformat(𝐏)'|>sparse # NOTE: Matrix arranged as 𝐏zz⁺, effect of rows on columns
 ;
 
 
