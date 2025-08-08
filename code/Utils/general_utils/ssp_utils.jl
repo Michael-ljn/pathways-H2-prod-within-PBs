@@ -1,7 +1,7 @@
 using DataFrames,XLSX
 
 
-scenario_path="../Source data/01_input/Premise scenarios/"
+scenario_path="../Source data/01_input/IAM scenarios/"
 
 function getVals(Variable::String;
                 years::StepRange{Int64, Int64}=2020:1:2100,

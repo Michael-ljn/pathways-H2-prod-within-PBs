@@ -5,20 +5,9 @@ using DataFrames, Interpolations,CSV
 respath = mkpath(config_respath* "2_02_allocated_space/")*"/";
 config_respath = mkpath(config_respath* "2_02_allocated_space/")*"/";
 
-rcParams["axes.prop_cycle"] = plt.cycler("color",["#e32f27"
-                                                "#fca082"
-                                                "#3787c0"]);
-
-
-AR6 = CSV.read("../Source data/01_input/IPCC AR6 scenarios/AR6_Scenarios_Database_World_v1.1.csv", DataFrame);
-rmd_SSP1 = CSV.read(scenario_path*"remind_SSP1-PkBudg500.csv", DataFrame) # REMIND SSP1-pkbudg500
-rmd_SSP2 = CSV.read(scenario_path*"remind_SSP2-PkBudg500.csv", DataFrame) # REMIND SSP2-pkbudg500
-rmd_SSP5 = CSV.read(scenario_path*"remind_SSP5-PkBudg500.csv", DataFrame) # REMIND SSP5-pkbudg500
-rmd_scenarios=vcat(rmd_SSP1, rmd_SSP2,rmd_SSP5);
-img_SSP2 = CSV.read(scenario_path*"image_SSP2-RCP19.csv", DataFrame) # IMAGE SSP2-1.9
-tucl_SSP2 = CSV.read(scenario_path*"tiam-ucl_SSP2-RCP19.csv", DataFrame) # TIAM-UCL SSP2-1.9
-# other_scenarios=vcat(img_SSP2,tucl_SSP2);
-
+# rcParams["axes.prop_cycle"] = plt.cycler("color",["#e32f27"
+#                                                 "#fca082"
+#                                                 "#3787c0"]);
 """
     fill_missing!(df)
 In‑place: for each row of `df`, any missing entries are filled by linear
@@ -213,6 +202,80 @@ function add_secondary_energy_rows(df::DataFrame)
 
     return sec
 end
+function add_secondary_energy_rows(df::DataFrame)
+
+    sec = DataFrame(df[1:0,:])   # empty clone for new rows
+    for sub in groupby(df, [:Model, :Scenario])
+        # println("Processing Model: ", sub.Model[1], ", Scenario: ", sub.Scenario[1])
+        # # skip if they already have a top‑level Secondary Energy
+        if any(sub.Variable .== "Secondary Energy")
+            continue
+        end
+        # pick only those detail rows "Secondary Energy|x" with exactly one '|'
+        detail = filter(r -> startswith(r.Variable, "Secondary Energy|") &&
+                             count(==('|'), r.Variable) == 1,
+                        sub)
+
+        if isempty(detail)
+            detail = filter(r -> startswith(r.Variable, "Secondary Energy|") &&
+                             count(==('|'), r.Variable) == 2,
+                        sub)
+            isempty(detail) && continue  # nothing to sum? skip
+        end
+
+        temp=DataFrame(sub[end,:])
+        cols=names(temp)
+        temp_meta = Matrix(copy(temp[:, 1:5]))
+        temp_meta[:,4] .= "Secondary Energy"  # set Variable to "Secondary Energy"
+        temp_meta[:,5] .= "EJ/yr"  # set Unit to "EJ/yr"
+        # 1) interpolate any missing in‑place
+        temp_data = detail[:, 6:end]|> fill_missing!  
+        temp_data  = Float64.(Matrix(temp_data))
+        temp_data  = sum(temp_data; dims=1)
+        temp_app=hcat(temp_meta,temp_data)
+        temp_rows = DataFrame(temp_app,cols)
+        sec=vcat(sec, temp_rows; cols = :union)
+    end
+    return sec
+end
+
+println("Reading AR6 scenarios...")
+AR6 = CSV.read("../Source data/01_input/IPCC AR6 dataset/AR6_Scenarios_Database_World_v1.1.csv", DataFrame);
+
+println("Reading remind scenarios...")
+rmd_SSP1 = CSV.read(scenario_path*"remind_SSP1-PkBudg500.csv", DataFrame) # REMIND SSP1-pkbudg500
+rmd_SSP2 = CSV.read(scenario_path*"remind_SSP2-PkBudg500.csv", DataFrame) # REMIND SSP2-pkbudg500
+rmd_SSP5 = CSV.read(scenario_path*"remind_SSP5-PkBudg500.csv", DataFrame) # REMIND SSP5-pkbudg500
+rmd_SSP1_650= CSV.read(scenario_path*"remind_SSP1-PkBudg650.csv", DataFrame) # REMIND SSP1-pkbudg600
+rmd_SSP2_650= CSV.read(scenario_path*"remind_SSP2-PkBudg650.csv", DataFrame) # REMIND SSP2-pkbudg600
+rmd_euSSP2_650= CSV.read(scenario_path*"remind-eu_SSP2-PkBudg650.csv", DataFrame) # REMIND SSP2-pkbudg600
+
+rmd_scenarios=vcat(rmd_SSP1, rmd_SSP2,rmd_SSP5, # REMIND SSP1-500, SSP2-500
+                   rmd_SSP1_650,rmd_SSP2_650,rmd_euSSP2_650); # REMIND SSP1-600, SSP2-600, REMIND-EU SSP2-600
+rmd_scenarios=filter(row -> row[:Region] == "World", rmd_scenarios)
+
+println("Reading IMAGE SSP2-1.9 scenarios...")
+img_SSP2 = CSV.read(scenario_path*"image_SSP2-RCP19.csv", DataFrame) # IMAGE SSP2-1.9
+img_SSP1_VLLO = CSV.read(scenario_path*"image_SSP1-VLLO.csv", DataFrame) # IMAGE SSP2_VLLO
+img_SSP2_VLHO = CSV.read(scenario_path*"image_SSP2-VLHO.csv", DataFrame) # IMAGE SSP2_VLHO
+img_scenarios=vcat(img_SSP2,img_SSP1_VLLO,img_SSP2_VLHO);#,img_SSP2_19,img_SSP2_19_sus
+println("Reading IMAGE SSP2-1.9new scenarios...")
+img_SSP2_19= CSV.read(scenario_path*"image_SSP2_19.csv", DataFrame) # IMAGE SSP2-1.9 #Nature paper
+img_SSP2_19_sus = CSV.read(scenario_path*"image_SSP2_19_Sus.csv", DataFrame) # IMAGE SSP2-1.9_sus #Nature paper
+img_scenarios=filter(row -> row[:Region] == "World", img_scenarios)
+img_scenarios_meta=img_scenarios[:,1:5]
+img_scenarios_data=img_scenarios[:,9:end]
+transform!(img_scenarios_data, ["2020"] => ByRow(x -> tryparse(Float64, string(x)) === nothing ? missing : parse(Float64, string(x))) => "2020")
+
+img_scenarios=hcat(img_scenarios_meta, img_scenarios_data)
+# img_scenarios° = copy(img_scenarios)
+println("Reading...")
+sec_rows = add_secondary_energy_rows(img_scenarios)
+println("past...")
+img_scenarios= vcat(img_scenarios, sec_rows; cols = :union)
+
+println("Reading tiam-ucl scenarios...")
+tucl_SSP2 = CSV.read(scenario_path*"tiam-ucl_SSP2-RCP19.csv", DataFrame) # TIAM-UCL SSP2-1.9
 
 """
     AR6database_formating(target; accepted_models=accepted_mods, rejected_scenarios=rejected_scenarios, database=AR6)
@@ -229,8 +292,8 @@ function AR6database_formating(target;
                             debug=false,
                             itp_start=2020)
 
-    AR6_filtered = filter(row -> !ismissing(row["2100"]) && row["2100"] <= target && row[:Variable] == "AR6 climate diagnostics|Effective Radiative Forcing|MAGICCv7.5.3|50.0th Percentile" && row[:Region] == "World", database);
-
+    AR6_filtered = filter(row -> !ismissing(row["2100"]) && row["2100"] <= target && row[:Variable] == "AR6 climate diagnostics|Effective Radiative Forcing|FaIRv1.6.2|50.0th Percentile" && row[:Region] == "World", database);
+    #"AR6 climate diagnostics|Effective Radiative Forcing|MAGICCv7.5.3|50.0th Percentile"
     mask = Set((s[:Model], s[:Scenario]) for s in eachrow(AR6_filtered) if 
                 any(mod -> occursin(mod, s[:Model]), accepted_models) && 
                 all(mod -> !(occursin(mod, s[:Scenario]) && 
@@ -244,7 +307,6 @@ function AR6database_formating(target;
     
     ## Now we need to make sure the AR6 scenarios have the variables we need to derive the allocated space. We therefore filter out any model lacking the variables below.
 
-    # df = your filtered & formatted AR6a
     sec_rows = add_secondary_energy_rows(AR6a)
     AR6a = vcat(AR6a, sec_rows; cols = :union)
 
@@ -268,7 +330,8 @@ function AR6database_formating(target;
     ## now data the scenarios from the AR6 databased are formatted, we add the premise scenarios that we know lead to the climate target.
     AR6a⁰ = AR6a[1:0, :]  
     AR6a⁰ = vcat(AR6a⁰,rmd_scenarios; cols = :union) # 
-    #AR6a⁰ = vcat(AR6a⁰, other_scenarios; cols = :union) # we do not include these because they lack variables to derive the allocated space.
+
+    #AR6a⁰ = vcat(AR6a⁰,img_scenarios; cols = :union) # we do not include these because they lack variables to derive the allocated space.
 
     AR6a⁰_meta=AR6a⁰[:,names(AR6a)[1:5]]
     AR6a⁰_data=AR6a⁰[:,string.(itp_start:1:2100)]|>fill_missing!
@@ -329,6 +392,20 @@ function AR6database_formating(target;
     df_gross_sup = add_gross_supply_rows(df_full)
     df=vcat(df_full, df_gross_sup; cols=:union)
 
+    # Second pass to exclude external scenarios if they do not meet the criteria
+    groups   = groupby(df, [:Model, :Scenario])
+    good_grps = filter(g ->
+        # at least one “Carbon Sequestration|…” row
+        any(contains.(g.Variable, "Emissions|CO2|Gross"))  &&
+        # at least one “Secondary Energy|…” row
+        any(contains.(g.Variable, "Emissions|CO2|Gross|Energy|Supply"))     &&
+        # exact “Secondary Energy|Hydrogen” row
+        "Secondary Energy|Hydrogen" ∈ g.Variable            &&
+        # exact “Emissions|CO2|Energy|Supply” row
+        "Secondary Energy" ∈ g.Variable,
+    groups)
+    df = vcat(good_grps...)
+
     if debug
         @info "Debug mode: AR6 database aligned with the target with and without formatting returned as tuple"
         return df, AR6°
@@ -342,3 +419,7 @@ end
 EJ_to_kwh=1/3.6e-12
 LHVH2=33.33 # kWh/kgH2
 EJH2_to_kgH2=1*EJ_to_kwh/LHVH2
+
+ṁᵏᵍ=38*EJH2_to_kgH2 # mass H2
+ṁᴹᵗ=ṁᵏᵍ.*1e-9 # convert to Mt
+# ṁᴳᵗ=ṁᴹᵗ.*1e-3

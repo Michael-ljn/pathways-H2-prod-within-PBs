@@ -1,7 +1,6 @@
 include("./general_utils/config.jl");
+include("./matrices/lade2020.jl");
 respath=mkpath(config_respath*"/1_00_total_human_impact/")*"/";
-using InvertedIndices
-using SparseArrays, LinearAlgebra, Statistics
 
 
 # Set up matplotlib parameters
@@ -88,6 +87,8 @@ function force_interactions(adjacency_matrix;node_size=1500,
                             dpi=800,
                             invertxaxis=false,
                             invertyaxis=false,
+                            rotation_angle=0, 
+                            scale_edge=15,
                             labels=catlabels_lade_ticks[bꜝ])
 
     node_labels=labels
@@ -104,7 +105,17 @@ function force_interactions(adjacency_matrix;node_size=1500,
             end
         end
     end
-    pos = nx.spring_layout(G, seed=seed, weight="weight")#45,25,22,21,2,3
+    pos = nx.spring_layout(G, seed=seed, weight="weight") 
+
+
+    if rotation_angle != 0
+        angle_rad = deg2rad(rotation_angle)
+        rotation_matrix = [cos(angle_rad) -sin(angle_rad); sin(angle_rad) cos(angle_rad)]
+        for (key, value) in pos
+            pos[key] = rotation_matrix * value
+        end
+    end
+
     fontproperties=font_prop
 
     plt.figure(figsize=figsize)
@@ -112,7 +123,7 @@ function force_interactions(adjacency_matrix;node_size=1500,
     nx.draw_networkx_labels(G, pos, labels=nx.get_node_attributes(G, "label"), font_size=5, font_color="black")
     edges = G.edges(data=true)
     edge_colors = [ adjacency_matrix[u, v] < 0 ? "#2CAFFF" : "#EF3B2C" for (u, v, d) in edges ]
-    edge_widths = [d["weight"] * 10 for (u, v, d) in edges]  # Scale edge width for visibility
+    edge_widths = [d["weight"] * scale_edge for (u, v, d) in edges]
 
     nx.draw_networkx_edges(G, pos, edgelist=edges, edge_color=edge_colors, width=edge_widths,
                         arrows=true, arrowstyle="->", arrowsize=arrowsize, connectionstyle="arc3,rad=0.2",
@@ -134,11 +145,86 @@ function force_interactions(adjacency_matrix;node_size=1500,
     if disp
         display(plt.gcf())
         plt.close("all")
-    else
+    end
+end
+function force_interactions(adjacency_matrix;node_size=1500, 
+                            figsize=(9, 9), 
+                            seed=11,
+                            arrowsize=18,
+                            min_source_margin=10,
+                            min_target_margin=25,
+                            aspect="auto",
+                            adjustable="box",
+                            savepath=respath*"SI_Fig5_force_interactions",
+                            disp=true,
+                            dpi=800,
+                            invertxaxis=false,
+                            invertyaxis=false,
+                            rotation_angle=0, 
+                            scale_edge=15,
+                            labels=catlabels_lade_ticks[bꜝ],max_scale=0.04 )
+
+    node_labels=labels
+    # node_labels[2]= "Biosphere\n Integrity"
+    
+    G = nx.DiGraph()
+    for (i, label) in enumerate(node_labels)
+        G.add_node(i, label=label)
+    end
+    for i in range(1,size(adjacency_matrix)[1],step=1)
+        for j in range(1,size(adjacency_matrix)[1],step=1)
+            if adjacency_matrix[i, j] != 0
+                G.add_edge(i, j, weight=adjacency_matrix[i, j])
+            end
+        end
+    end
+    pos = nx.spring_layout(G, seed=seed, weight="weight") 
+
+
+    if rotation_angle != 0
+        angle_rad = deg2rad(rotation_angle)
+        rotation_matrix = [cos(angle_rad) -sin(angle_rad); sin(angle_rad) cos(angle_rad)]
+        for (key, value) in pos
+            pos[key] = rotation_matrix * value
+        end
+    end
+
+    fontproperties=font_prop
+
+    plt.figure(figsize=figsize)
+    nx.draw_networkx_nodes(G, pos, node_size=node_size, node_color="white", edgecolors="black") #node_color='#c2b280',
+    nx.draw_networkx_labels(G, pos, labels=nx.get_node_attributes(G, "label"), font_size=5, font_color="black")
+    edges = G.edges(data=true)
+    edge_colors = [adjacency_matrix[u, v] < 0 ? "dodgerblue"  : "red" for (u, v, d) ∈ edges]# "#2CAFFF", #EF3B2C
+    weights = [abs(adjacency_matrix[u, v]) for (u, v, d) in edges]
+    
+    min_weight, max_weight = minimum(weights), maximum(weights)#*1.2,*max_scale 
+    
+    edge_widths = [(abs(adjacency_matrix[u, v])*max_scale- min_weight) / (max_weight - min_weight+0.003)+ 1 * scale_edge for (u, v, d) ∈ edges]
+    # edge_widths = [d["weight"] * scale_edge for (u, v, d) in edges]
+
+    nx.draw_networkx_edges(G, pos, edgelist=edges, edge_color=edge_colors, width=edge_widths,
+                        arrows=true, arrowstyle="->", arrowsize=arrowsize, connectionstyle="arc3,rad=0.2",
+                        min_source_margin=min_source_margin,min_target_margin=min_target_margin)
+
+    plt.gca().set_aspect(aspect,adjustable=adjustable)
+
+    if invertxaxis
+        plt.gca().invert_xaxis()
+    end
+    if invertyaxis
+        plt.gca().invert_yaxis()
+    end
+
+    plt.axis("off")
+    plt.tight_layout()
+    plt.savefig(savepath*".svg",bbox_inches="tight",transparent=true)
+    # plt.savefig(savepath*".png",dpi=dpi,bbox_inches="tight",transparent=true)
+    if disp
+        display(plt.gcf())
         plt.close("all")
     end
 end
-
 
 S =[ᶜᶜ ᴮᴵˡ ᴮᴵᶠ ᴮᴵᴼ ˡˢᶜ ᴮᶜᶠ ᴼᵃ ᶠʷᵘ ᵃᵃˡ ˢᵒᵈ]
 
@@ -170,9 +256,28 @@ catnames_ticks=wrap_text.(catnames, 9); #as ticks for figures.
 ˡˢᶜ° = 9 # Land System Change   
 ᴮᴵ° = 10 # Biosphere Integrity
 
+function bi_aggregation(mat)
+    𝖘ᵇⁱ = [2,3,4]
+    𝐁°=zeros(10,10)
+    sum_row=mean(mat[𝖘ᵇⁱ,:],dims=1)
+    mean_col=sum(mat[:,𝖘ᵇⁱ],dims=2)
+    𝖘ꜝᵇⁱ=setdiff(1:1:10, 𝖘ᵇⁱ)
+    𝐁°[𝖘ꜝᵇⁱ,𝖘ꜝᵇⁱ]=mat[𝖘ꜝᵇⁱ,𝖘ꜝᵇⁱ]
+    𝐁°[2,:]=sum_row
+    𝐁°[:,2]=mean_col
+    𝐁°=𝐁°[Not([3,4]),Not([3,4])]; # we drop the unnecessary colums.
+    return 𝐁°
+end
+
 
 """
-function to convert the interaction matrix into an amplification vector to be directly applied on a control variable vector. Dimensions are rearranged to matach that of the characterisation matrix. The biosphere integrity amplificiation coefficient is the avegrage of the 3 variables. Climate change and biochemical flows have amplification variables duplicated for consistency. 
+#   Matrix formatting function 
+## Description   
+> function to convert the interaction matrix into an amplification vector to be directly applied on a control variable vector. Dimensions are rearranged to matach that of the characterisation matrix. The biosphere integrity amplificiation coefficient is the avegrage of the 3 variables. Climate change and biochemical flows have amplification variables duplicated for consistency. 
+
+> takes a matrix ``A`` to compute ``A^°`` a an updated matrix.
+
+## Methods available
 """
 function matformat(mat)
     b = [ᴮᴵˡ, ᴮᴵᶠ, ᴮᴵᴼ] # indexes of biosphere integrity variables
@@ -215,66 +320,6 @@ function matformat(mat)
 
     return mat1°
 end
-
-#### matrices
-
-
-𝐈=I(10) # Identity matrix
-
-# 𝐁 matrix for Biophysical interactions, # NOTE: Matrix arranged as 𝐁z⁺z, effect of columns on rows
-𝐁 = [
-    1.0     0.15    0.38    0.22    0.10    0.19    -0.07   -0.08   0       -0.06   # Climate Change
-    0.22    1       0       0       0       0       0.08    0       0       0       # BI Land
-    0.17    0       1       0       0       0       0.04    0       0       0       # BI Freshwater
-    0.15    0       0       1       0       0       0.06    0       0       0       # BI Ocean
-    0.12    0.8     0.08    0       1       0       0.16    -0.11   0       0       # Land System Change
-    0.04    0.02    1       0.05    0       1       -0.03   0       0.10    0.01    # Biogeochemical Flows
-    0.10    0       0       1       0       0       1       0       0       0       # Ocean Acidification
-    0       0       1       0       0       0       0       1       0       0       # Freshwater Use
-    -0.56   0       0       0       0       0       0       0       1       0       # Aerosol Loading
-    -0.11   0       0       0       0       0       0       0       0       1       # Strat. Ozone Deplet.
-    ]'-𝐈 |>sparse
-
-# NOTE: Matrix arranged as 𝐁z⁺z, effect of columns on rows
-# 𝐁 = matformat(𝐁)'|>sparse # NOTE: Matrix arranged as 𝐁zz⁺, effect of rows on columns
-    
-
-# 𝐑 matrix for Reactive human-mediated interactions # NOTE: Matrix arranged as 𝐑z⁺z, effect of columns on rows
-𝐑 = [
-    1       0       0       0       0.05        0       0       0       0       0       # Climate Change
-    0       1       0       0       0           0       0       0       0       0       # BI Land
-    0.002   0       1       0       0.003       0       0       0       0       0       # BI Freshwater
-    0       0       0       1       0.02        0       0       0       0       0       # BI Ocean
-    0       0       0       0       1           0       0       0       0       0       # Land System Change
-    0       0       0       0       0           1       0       0       0       0       # Biogeochemical Flows
-    0       0       0       0       0           0       1       0       0       0       # Ocean Acidification
-    0       0       0       0       0           0       0       1       0       0       # Freshwater Use
-    0       0       0       0       0           0       0       0       1       0       # Aerosol Loading
-    0       0       0       0       0           0       0       0       0       1       # Strat. Ozone Deplet.
-    ]'-𝐈 |>sparse
-
-# NOTE: Matrix arranged as 𝐑z⁺z, effect of columns on rows
-# 𝐑 = matformat(𝐑)'|>sparse # NOTE: Matrix arranged as 𝐑zz⁺, effect of rows on columns
-
-# Define 𝐏 matrix for Parallel human drivers, # NOTE: Matrix arranged as 𝐏z⁺z, effect of columns on rows
-𝐏 = [
-    1       0       0       0       0       0       0.40        0.065       0       0       # Climate Change
-    0       1       0       0       0       0       0           0           0       0       # BI Land
-    0       0       1       0       0       0       0           0           0       0       # BI Freshwater
-    0       0       0       1       0       0       0           0           0       0       # BI Ocean
-    0.33    0       0       0       1       1.3     0           0.36        0       0       # Land System Change
-    0.005   0       0       0       0       1       0           0           0       0       # Biogeochemical Flows
-    0       0       0       0       0       0       1           0           0       0       # Ocean Acidification
-    0.018   0       0       0       0       0       0           1           0       0       # Freshwater Use
-    0       0       0       0       0       0       0           0           1       0       # Aerosol Loading
-    0.52    0       0       0       0       0       0           0           0       1       # Strat. Ozone Deplet.
-    ]'-𝐈 |>sparse # NOTE: Matrix arranged as 𝐏z⁺z, effect of columns on rows
-
-
-# NOTE: Matrix arranged as 𝐏z⁺z, effect of columns on rows
-
-# 𝐏 = matformat(𝐏)'|>sparse # NOTE: Matrix arranged as 𝐏zz⁺, effect of rows on columns
-;
 
 
 
