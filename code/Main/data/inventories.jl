@@ -1,6 +1,8 @@
 ########################  LIFE CYCLE INVENTORIES ########################
 module inventories
     export LCI
+
+    using lce
     ### 1. ELECTRICITY SOURCES
     ### 1.1 Background system electricity sources 
         #biomass
@@ -1235,6 +1237,7 @@ module inventories
         ## methods
         """ 
     function LCI(p)
+        wood_elect(p)
         DAC(p)
         model(p)
     end

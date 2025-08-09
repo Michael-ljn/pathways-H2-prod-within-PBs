@@ -1,12 +1,10 @@
+module optimisation
+export opti
 
-include("./main_utils.jl")
-
-⊘(a, b) = a ./ b # written `\oslash``. Here we simply register it so the formulations in the optimisation model matches that of the paper.
-∑(a) = sum(a) # written `\sum``
-
-global Δs =zeros(4);
-
+include("./utils/main_utils.jl")
+using .TcmUtils, JuMP, CPLEX, LinearAlgebra, Statistics, DataFrames, JLD2
 ## Main optimisation function
+
     """
     ## optimisation function
 
@@ -17,8 +15,6 @@ global Δs =zeros(4);
     """
     function opti!(p, # this is the project
                     𝛚,  # the allocated safe operating space per unit of hydrogen should be a 1x10 vector
-                    𝛈_electrolysis,
-
                     # all constrains
                     c_biomass_electricity = nothing,
                     c_gas_electricity = nothing,
@@ -67,21 +63,31 @@ global Δs =zeros(4);
 
     
         ### setting the references flows
+            getTcmKey("hydrogen production, at natural gas-fired combined cycle power plant, post, pipeline 200km, storage 1000m","World") # this is the reference flow for the electricity production from gas.
+
             𝐟[16]=ccs #Here we set what should be the necessary carbon to be captured via DAC
             𝐟[end]=1  # Here we set the production as 1kgH₂
         ## end
 
         ### Efficiencies
             ### FIXME: add the indices.
-            𝖘ᵉ #create the set of electrical efficiency gain for technologies.
+            𝖘ᵉ #create the set of electrical efficiency gain of hydrogen technologies.
             𝛈ᵉ # corresponding vector to account for efficiency gains. 
             iᵉ # this is where the electricity is produced from choices.
             𝐀[iᵉ,𝖘ᵉ] = 𝐀[i_electicity,𝖘ᵉ] ⊘ 𝛈ᵉ #efficiency gains accounted for.
 
-            𝖘ᵐ #create the set of materal efficiency gains for technologies.
-            𝛈ᵐ # corresponding vector to account for efficiency gains. 
-            iᵐ # this is where the electricity is produced from choices.
-            𝐀[iᵐ,𝖘ᵐ] = 𝐀[iᵐ,𝖘ᵐ] ⊘ 𝛈ᵐ #efficiency gains accounted for.
+                # mean: 54
+                # minimum: 52.9
+                # maximum: 55.1
+                # 2050:
+                # mean: 48.9
+                # minimum: 45.3
+                # maximum: 52.5
+
+            # 𝖘ᵐ #create the set of materal efficiency gains for technologies.
+            # 𝛈ᵐ # corresponding vector to account for efficiency gains. 
+            # iᵐ # this is where the electricity is produced from choices.
+            # 𝐀[iᵐ,𝖘ᵐ] = 𝐀[iᵐ,𝖘ᵐ] ⊘ 𝛈ᵐ #efficiency gains accounted for.
         ## end
 
 
@@ -449,3 +455,5 @@ global Δs =zeros(4);
                             𝚲=𝚲b)
             return resultat
     end;
+
+end

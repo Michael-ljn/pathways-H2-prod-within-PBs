@@ -1,8 +1,3 @@
-# env="geospatial"
-
-# ENV["PYTHON"] = ""
-# using Pkg
-# Pkg.build("PyCall")
 using PyCall
 using PyPlot
 pushfirst!(pyimport("sys")."path", "../planetary-boundaries-visualisation/source");

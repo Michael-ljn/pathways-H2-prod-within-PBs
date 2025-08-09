@@ -1,13 +1,19 @@
+# env="geospatial","ab"
 # # Julia environment settings NOTE: Run this only once
-# ENV["PYTHON"] = "/Users/mickael/anaconda3/envs/ab/bin/python3.11"
+# ENV["PYTHON"] = "/Users/mickael/anaconda3/envs/$(env)/bin/python3.11"
+
 # using Pkg
 # Pkg.build("PyCall")
+
 using PyCall
 warn=pyimport("warnings")
 warn.filterwarnings("ignore", message="pkg_resources is deprecated as an API")
 using PyPlot
 import Seaborn
 using Plots
+
+
+
 # Matplotlib configuration
 PyPlot.svg(true)
 tkr = pyimport("matplotlib.ticker")
