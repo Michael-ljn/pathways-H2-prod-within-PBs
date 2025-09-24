@@ -45,3 +45,13 @@ storyboards/
 _build/
 __pycache__/
 Scenario/
+co2.csv
+co2.txt
+tempe1.csv
+temperature_data.txt
+temperature.csv
+trash/
+co2_concentration.svg
+h2_emi.xlsx
+*.jld
+hydrogen_projects.ipynb

@@ -5,9 +5,14 @@
 # using Pkg
 # Pkg.build("PyCall")
 
+
 using PyCall
 warn=pyimport("warnings")
 warn.filterwarnings("ignore", message="pkg_resources is deprecated as an API")
+using SparseArrays
+Base.showerror(io::IO, e::ArgumentError) =
+    occursin("pointer to the SparseArrays.LibSuiteSparse.cholmod_factor_struct object is null", e.msg) ? nothing : Base.showerror(io, e)
+    
 using PyPlot
 import Seaborn
 using Plots
