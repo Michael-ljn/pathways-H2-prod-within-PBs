@@ -17,7 +17,7 @@ module pre_optimisation
         ⊘ = ./  # Define ⊘ as an alias for element-wise division - Hadamard division
         
         struct OptimisationStructb
-            project::lce.ProjectStruct #to retrieve data from a project. All projects should have the same structure.
+            project
             δ𝐀
             δ𝐁
             δ𝐜ᵗ
@@ -25,8 +25,11 @@ module pre_optimisation
             𝐐
             𝐟
             𝚪
-            end
-        
+        end
+
+        """
+        Project initialisation function.
+        """
         function ini()
                 @info "projects are now loading"
                 years=2025:5:2050;
@@ -40,6 +43,8 @@ module pre_optimisation
                 return [initProject("natcom",model=x.first,RCP=1.9,SSP=x.second,year=y) for x ∈ ini_scenario, y ∈ years]
         end 
 
+        𝐏=ini()
+
         """
         # Internal function to generate δ𝐀,δ𝐁 matrices.
         """
@@ -51,8 +56,6 @@ module pre_optimisation
                 return ChoiceModel.(p)
         end 
 
-        𝐏=ini()
-        # _generate_matrices(𝐏; save=true) # generate the matrices and save the projects.
         """
         # Function to generate the technology constraint vector for the optimisation problem.
         ## Description
@@ -64,9 +67,9 @@ module pre_optimisation
 
             δc_biomass_electricity,δc_gas_electricity_CC, δc_gas_electricity_noCC, δc_coal_electricity, δc_hydro_electricity, δc_nuclear_electricity, δc_wind_electricity, δc_solar_electricity, δc_solar_PV_electricity, δc_CSP_electricity, δc_geothermal_electricity = constrains.electricity_constraints()
 
-            𝖘=getTcmChoices(p,all_keys=true) #every project should be ordered the same. 
+            𝖘=getTcmChoices(p,all_keys=true) # set of choices
             PV_key=getTcmKey("electricity production, photovoltaic, 570kWp open ground installation, multi-Si","RoW",𝐏[1,1])
-            𝖘=vcat(𝖘,[PV_key])
+            𝖘=vcat(𝖘,[PV_key]) #creation of an electricity set.
             act_to_tcm=Dict([x.second.act =>x.first for x ∈ pairs(filter(j -> j[1] in 𝖘, getTcmAct(p)))]...)
             res_elect_to_tcm = Dict(Symbol(process_names[k]) => v for (k, v) in act_to_tcm if haskey(process_names, k))
 
@@ -90,7 +93,6 @@ module pre_optimisation
                                     :SOECelectricity => δc_SOEC,
                                     :AEC => δc_AE,
                                     :PEM => δc_PEM,
-                                    
                                     :E_Nuclear_PWR=> δc_nuclear_electricity,                                 
                                     :E_NGccs=> δc_gas_electricity_CC,
                                     :E_Coal=> δc_coal_electricity,
@@ -105,14 +107,8 @@ module pre_optimisation
                                     :E_Solar_Thermal=> δc_CSP_electricity,
                                     :E_PV=> δc_solar_electricity,
                                     :E_Geothermal=> δc_geothermal_electricity,
-                                    ## unconstrained electricity sources due to lack of data.
-                                    # :E_Lignite=> ,
-                                    # :E_Lignite_IGCC=> ,
-                                    # :E_Hydrogen_1GW=> ,
-                                    # :E_Oil=> ,
-                                    # :E_Peat=> ,
                                     )
-                ## all keys to constrains.
+
 
                 # update constrain vector.
                 cm=ChoiceModel(p)[2]
@@ -128,19 +124,6 @@ module pre_optimisation
                 end
                 return δ𝐜ᵗ 
         end
-        # getAct("electricity production, hard coal, supercritical","ZA",project=𝐏[1,1]) # to load the activities in the project.
-        # getTcmKey("electricity production, hard coal, supercritical","ZA",𝐏[1,1])
-        # LCI(𝐏[1,1])
-        
-        # sort(getTcmChoices(:electricityHV,𝐏[1,1]))
-        # getTcmAct(15,𝐏[1,1])
-        # 𝖘=getTcmChoices(𝐏[1,1],all_keys=true) #every project should be ordered the same. 
-        # PV_key=getTcmKey("electricity production, photovoltaic, 570kWp open ground installation, multi-Si","RoW",𝐏[1,1])
-        # 𝖘=vcat(𝖘,[PV_key])
-        # act_to_tcm=Dict([x.second.act =>x.first for x ∈ pairs(filter(j -> j[1] in 𝖘, getTcmAct(𝐏[1,1])))]...)
-        # res_elect_to_tcm = Dict(Symbol(process_names[k]) => v for (k, v) in act_to_tcm if haskey(process_names, k))
-
-        # keys(res_elect_to_tcm)
 
         _generate_matrices(𝐏)
 
@@ -157,7 +140,4 @@ module pre_optimisation
         OptiData=OptimisationStructb(𝐏[1,1], δ𝐀, δ𝐁, δ𝐜ᵗ, 𝛚, 𝐐, 𝐟, 𝚪)
 
         @save "./main/modules/pre_optimisation.jld" OptiData
-    # else
-    #     nothing
-    # end
 end

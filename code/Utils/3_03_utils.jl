@@ -1,6 +1,6 @@
 using SparseArrays
 using JLD2
-@load "../Source data/02_results/1_00_total_human_impact/data_interaction_matrices.jld2" 𝚪ᵦ 𝚪ₕ catnames_ticks
+@load "../Source data/03_additional_data/1_00_total_human_impact/data_interaction_matrices.jld2" 𝚪ᵦ 𝚪ₕ catnames_ticks
 
 refrence_flows=[
     "Processed rice (in Mt)"

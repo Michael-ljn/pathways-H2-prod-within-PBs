@@ -48,14 +48,15 @@ module optimisation
         rsolarmin=minimum(getVals("Secondary Energy|Electricity|Wind",df=df)./getVals("Secondary Energy|Electricity|Solar",df=df),dims=1)[(2025:5:2050).-2019];
         δwindsol=TriangularDist.(rsolarmin, rsolarmax, rsolarwindmed)
     ## end
-
+    
 
     𝐏=OptiData.project
     δ𝐀 = OptiData.δ𝐀  #technosphere matrix
     δ𝐁 = OptiData.δ𝐁  #biosphere matrix
     δ𝐜 = OptiData.δ𝐜ᵗ #constrains
     𝛚 = OptiData.𝛚 # allocated space
-    𝐐 = OptiData.𝐐 #Characterisation 
+    @load "main/modules/Qmatrix.jld2" 𝐐
+    
     𝐟 = OptiData.𝐟  #demand vector
     𝚪 = Matrix(𝚪ᵦ) #Matrix(𝚪ₕ) #interaction matrix
 
@@ -84,7 +85,7 @@ module optimisation
     𝖘ᴱᴴⱽ = getTcmChoices(:electricityHV,𝐏) #set of electricity low voltage indices
  
 
-    ## competing technologies sets
+    ## sets
     𝖘ᴺᴳ = newSet([:SMR,:hydrogen_pyrolysis])
     𝖘ᴺᴳ⁻ᶜᶜˢ = newSet([:hydrogen_SMRccs,:hydrogen_bSMRccs])
 
@@ -282,7 +283,7 @@ module optimisation
                         𝖘ᴱᴴⱽ⁻ = 𝐀[𝕴ᴱᴴⱽ,𝖘] .< 0 #electricty consumption only
 
                         cs=∑(𝐜[𝖘ᴿᴱ])/ ∑(𝐜[𝖘ᴿᴱ°])
-                        ca=𝐜[𝖘ᴿᴱ].+0.1 #here we add a bit of flexibility for numerical issues.
+                        ca=𝐜[𝖘ᴿᴱ].+0.1 #here we add a bit of flexibility to avoid numerical issues.
                         𝐜[𝖘ᴱᴸⱽ]= zeros(length(𝖘ᴱᴸⱽ))
                         𝐜[𝖘ᴱᴴⱽ]= zeros(length(𝖘ᴱᴴⱽ))
                         𝐜[𝖘ᴿᴱ] = ca
@@ -403,8 +404,6 @@ module optimisation
                 @variable(model, 𝐬[1:size(𝐀,2)]) # 𝐬 [scale unit × kgH₂⁻¹] should be as long as the processes in the technosphere.
                 @variable(model, 𝐟[1:size(𝐀,1)])
                 
-
-
                 # Expressions
                 @expression(model, 𝐠, 𝐠ᴴ² ⊕ 𝐁*𝐬) # 𝐠 = 𝐠ᴴ²+𝐁𝐬, Here we add potential hydrogen emissions from 0 to 0.3
                 @expression(model, 𝐝, 𝐐*𝐠 ⊘ 𝛚) # 𝐝 = 𝐐𝐠 ⊘ 𝛚 -> Direct normalised impact.   
@@ -444,7 +443,7 @@ module optimisation
                 # constraints
                 @constraint(model, 𝐟[Not(vcat(𝕴ᴰᴬᶜ,𝕴ᴴ²))] .== 0)
                 @constraint(model, 𝐟[𝕴ᴴ²] == (1+h2_leak))
-                @constraint(model, 𝐀*𝐬 == 𝐟) # Here we impose that hydrogen and some CCS if selected need to be produced
+                @constraint(model, 𝐀*𝐬 == 𝐟) # Here we impose that hydrogen and some DACS if selected need to be produced
                 @constraint(model, 𝐬[𝖘⁺] ≥ 0) # define the set 𝐬⁺ of processes involved in choices where 𝐬 cannot be negative.
                 
                 
@@ -462,8 +461,6 @@ module optimisation
 
                     @expression(model, 𝐜ᴱᴴⱽ, ⊖(𝐀[𝕴ᴱᴴⱽ,𝖘ᴱᴴⱽ⁻]' * 𝐬[𝖘ᴱᴴⱽ⁻]) ⊙ (𝐜[𝖘ᴱᴴⱽ] ⊙ cs))
                     @expression(model, 𝐜ᴱᴸⱽ, ⊖(𝐀[𝕴ᴱᴸⱽ,𝖘ᴱᴸⱽ⁻]' * 𝐬[𝖘ᴱᴸⱽ⁻]) ⊙ (𝐜[𝖘ᴱᴸⱽ] ⊙ cs))
-
-
 
                     @constraint(model, 𝐬[𝖘ᴱᴴⱽ] ≤ 𝐜ᴱᴴⱽ)
                     @constraint(model, 𝐬[𝖘ᴱᴸⱽ] ≤ 𝐜ᴱᴸⱽ)
@@ -545,10 +542,10 @@ module optimisation
                 if interactions
                     𝐃° = 𝐇 ⊘ 𝛀
                     𝐗° = 𝚪*𝐃°
-                    𝐗° = 𝐗° ./ sum(𝐗°, dims=2) # normalise the contributions
+                    𝐗° = 𝐗° ⊘ sum(𝐗°, dims=2) # normalise contributions
                     return  𝐗°
                 else
-                    𝐇°=𝐇./sum(𝐇, dims=2)
+                    𝐇°=𝐇 ⊘ sum(𝐇, dims=2)
                     return  𝐇°
                 end
 

@@ -66,11 +66,7 @@ SymLogNorm = mpl_colors.SymLogNorm
     ## future hydrogen demand
     EJ_to_kwh=1/3.6e-12
     LHVH2=33.33 # kWh/kgH2
-    EJH2_to_kgH2=1*EJ_to_kwh/LHVH2
-    ṁᵏᵍ=38*EJH2_to_kgH2 # mass H2
-    ṁᴹᵗ=ṁᵏᵍ.*1e-9 # convert to Mt
-    ṁᴳᵗ=ṁᴹᵗ.*1e-3
-
+    EJH2_to_kgH2=EJ_to_kwh/LHVH2
     SEʰ²=getVals("Secondary Energy|Hydrogen",years=years,df=df_h2)
     ṁᵏᵍ=SEʰ²⊙ EJH2_to_kgH2 # mass H2 using the LHV of hydrogen (33.33 kWh/kg)
     ṁᴹᵗ=ṁᵏᵍ⊙ 1e-9 # convert to Mt

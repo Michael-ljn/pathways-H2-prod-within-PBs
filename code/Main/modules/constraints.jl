@@ -253,68 +253,62 @@ module constrains
         min_c_geothermal_electricity=minimum(c_geothermal_electricity,dims=1)
         med_c_geothermal_electricity=median(c_geothermal_electricity,dims=1)
         δc_geothermal_electricity= TriangularDist.(min_c_geothermal_electricity, max_c_geothermal_electricity, med_c_geothermal_electricity)
-
-        # c_oil_electricity = (getVals("Secondary Energy|Electricity|Oil") ⊘ getVals("Secondary Energy"))
-        #c_geothermal_electricity = (getVals("Secondary Energy|Electricity|Geothermal") ⊘ getVals("Secondary Energy"))
-        
+  
         ## export constraints for further analysis.
         @save "../Source data/03_additional_data/4_00_constrains/electricity_constraints.jld" δc_biomass_electricity δc_gas_electricity_CC δc_gas_electricity_noCC δc_coal_electricity δc_hydro_electricity δc_nuclear_electricity δc_wind_electricity δc_solar_electricity δc_solar_PV_electricity δc_CSP_electricity δc_geothermal_electricity
         
         # Plotting
-        medians=[vcat(median.(rand.(δc_biomass_electricity,10000),dims=1)...)⊙ 100,
-            vcat(median.(rand.(δc_gas_electricity_CC,10000),dims=1)...)⊙ 100,
-            vcat(median.(rand.(δc_gas_electricity_noCC,10000),dims=1)...)⊙ 100,
-            vcat(median.(rand.(δc_coal_electricity,10000),dims=1)...)⊙ 100,
+        medians=[
             vcat(median.(rand.(δc_hydro_electricity,10000),dims=1)...)⊙ 100,
             vcat(median.(rand.(δc_nuclear_electricity,10000),dims=1)...)⊙ 100,
             vcat(median.(rand.(δc_wind_electricity,10000),dims=1)...)⊙ 100,
             vcat(median.(rand.(δc_solar_electricity,10000),dims=1)...)⊙ 100,
-            vcat(median.(rand.(δc_geothermal_electricity,10000),dims=1)...)⊙ 100,]
+            vcat(median.(rand.(δc_CSP_electricity,10000),dims=1)...)⊙ 100,
+            vcat(median.(rand.(δc_geothermal_electricity,10000),dims=1)...)⊙ 100,
+            ]
 
-        q05s=[quantile(cat(rand.(δc_biomass_electricity,10000)...,dims=2),0.05,dims=1)⊙ 100,
-                quantile(cat(rand.(δc_gas_electricity_CC,10000)...,dims=2),0.05,dims=1)⊙ 100,
-                quantile(cat(rand.(δc_gas_electricity_noCC,10000)...,dims=2),0.05,dims=1)⊙ 100,
-                quantile(cat(rand.(δc_coal_electricity,10000)...,dims=2),0.05,dims=1)⊙ 100,
+        q05s=[
+            
                 quantile(cat(rand.(δc_hydro_electricity,10000)...,dims=2),0.05,dims=1)⊙ 100,
                 quantile(cat(rand.(δc_nuclear_electricity,10000)...,dims=2),0.05,dims=1)⊙ 100,
                 quantile(cat(rand.(δc_wind_electricity,10000)...,dims=2),0.05,dims=1)⊙ 100,
                 quantile(cat(rand.(δc_solar_electricity,10000)...,dims=2),0.05,dims=1)⊙ 100,
-                quantile(cat(rand.(δc_geothermal_electricity,10000)...,dims=2),0.05,dims=1)⊙ 100,]
+                quantile(cat(rand.(δc_CSP_electricity,10000)...,dims=2),0.05,dims=1)⊙ 100,
+                quantile(cat(rand.(δc_geothermal_electricity,10000)...,dims=2),0.05,dims=1)⊙ 100,
+                ]
 
-        q65s= [quantile(cat(rand.(δc_biomass_electricity,10000)...,dims=2),0.65,dims=1)⊙ 100,
-                quantile(cat(rand.(δc_gas_electricity_CC,10000)...,dims=2),0.65,dims=1)⊙ 100,
-                quantile(cat(rand.(δc_gas_electricity_noCC,10000)...,dims=2),0.65,dims=1)⊙ 100,
-                quantile(cat(rand.(δc_coal_electricity,10000)...,dims=2),0.65,dims=1)⊙ 100,
+        q65s= [
+            
                 quantile(cat(rand.(δc_hydro_electricity,10000)...,dims=2),0.65,dims=1)⊙ 100,
                 quantile(cat(rand.(δc_nuclear_electricity,10000)...,dims=2),0.65,dims=1)⊙ 100,
                 quantile(cat(rand.(δc_wind_electricity,10000)...,dims=2),0.65,dims=1)⊙ 100,
                 quantile(cat(rand.(δc_solar_electricity,10000)...,dims=2),0.65,dims=1)⊙ 100,
-                quantile(cat(rand.(δc_geothermal_electricity,10000)...,dims=2),0.65,dims=1)⊙ 100,]
+                quantile(cat(rand.(δc_CSP_electricity,10000)...,dims=2),0.65,dims=1)⊙ 100,
+                quantile(cat(rand.(δc_geothermal_electricity,10000)...,dims=2),0.65,dims=1)⊙ 100,
+                ]
 
 
-        q95s=[quantile(cat(rand.(δc_biomass_electricity,10000)...,dims=2),0.95,dims=1)⊙ 100,
-                quantile(cat(rand.(δc_gas_electricity_CC,10000)...,dims=2),0.95,dims=1)⊙ 100,
-                quantile(cat(rand.(δc_gas_electricity_noCC,10000)...,dims=2),0.95,dims=1)⊙ 100,
-                quantile(cat(rand.(δc_coal_electricity,10000)...,dims=2),0.95,dims=1)⊙ 100,
+        q95s=[
+            
                 quantile(cat(rand.(δc_hydro_electricity,10000)...,dims=2),0.95,dims=1)⊙ 100,
                 quantile(cat(rand.(δc_nuclear_electricity,10000)...,dims=2),0.95,dims=1)⊙ 100,
                 quantile(cat(rand.(δc_wind_electricity,10000)...,dims=2),0.95,dims=1)⊙ 100,
                 quantile(cat(rand.(δc_solar_electricity,10000)...,dims=2),0.95,dims=1)⊙ 100,
-                quantile(cat(rand.(δc_geothermal_electricity,10000)...,dims=2),0.95,dims=1)⊙ 100,]
+                quantile(cat(rand.(δc_CSP_electricity,10000)...,dims=2),0.95,dims=1)⊙ 100,
+                quantile(cat(rand.(δc_geothermal_electricity,10000)...,dims=2),0.95,dims=1)⊙ 100,
+                ]
             
-        titles=["Biomass",
-                    "Gas w/CCS",
-                    "Gas w/o CCS",
-                    "Coal",
-                    "Hydro",
-                    "Nuclear",
-                    "Wind",
-                    "Solar PV",
-                    "Geothermal",]
+        titles=[
+                "Hydro",
+                "Nuclear",
+                "Wind",
+                "Solar PV",
+                "Solar CSP",
+                "Geothermal",]
 
-        fig, axs = plt.subplots(3,3, figsize=(9, 9),sharex=true)
-        title_letters = ["(a)", "(b)", "(c)", "(d)", "(e)", "(f)", "(g)", "(h)", "(i)"]
-            for i ∈ 1:9
+        fig, axs = plt.subplots(3,2, figsize=(9, 9),sharex=true)
+        title_letters = ["(a)", "(b)", "(c)", "(d)", "(e)", "(f)"]
+            for i ∈ 1:6
                 axs[i].plot(years, medians[i], lw=2, label="Median")
                 axs[i].plot(years, q65s[i], lw=2,linestyle="--",label="lower constrain")
                 axs[i].plot(years, q95s[i], lw=2,linestyle="--",label="upper constrain")

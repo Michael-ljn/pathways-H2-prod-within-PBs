@@ -6,9 +6,10 @@
     ## - b. Australian Research Council, Training Centre for the Global Hydrogen Economy, Sydney 2052, Australia. 
     ## - c. School of Minerals and Energy Engineering, The University of New South Wales, Sydney 2052, Australia. 
     ## - d. Centre for Absolute Sustainability, Technical University of Denmark, Kgs, Lyngby, Denmark.
+
 # using Revise
 module Main
-    export Fig3b,Fig3d,Fig3,Fig4,Fig5,Fig6,Fig7,Sfig10,Sfig11,sysconfig,opti,𝖘oil_coal,𝖘lignite_peat,𝖘gas,𝖘ⁿᵘᶜˡᵉᵃʳ,𝖘ᴱᴸ⁻ᵇᶦᵒ,𝖘solar_wind,𝖘hydro_geothermal,𝖘wind
+    export Fig3b,Fig3d,Fig3,Fig4,Fig5,Fig6,Fig7,Sfig10,Sfig11,sysconfig,opti,𝖘oil_coal,𝖘lignite_peat,𝖘gas,𝖘ⁿᵘᶜˡᵉᵃʳ,𝖘ᴱᴸ⁻ᵇᶦᵒ,𝖘solar_wind,𝖘hydro_geothermal,𝖘wind,𝐏
     # includes
         include("./init.jl")
         using .optimisation, lce, .TcmUtils
@@ -24,7 +25,7 @@ module Main
         δ𝐜 = OptiData.δ𝐜ᵗ #constrains
         respath=mkpath(config_respath*"/main/")*"/"
     #end
-    
+    𝐏2050 = initProject("natcom",model="REMIND",RCP=1.9,SSP=1,year=2050)
     function electricity_sets()
         𝖘ᴱᴴⱽ = getTcmChoices(:electricityHV,𝐏) 
         PV_key=getTcmKey("electricity production, photovoltaic, 570kWp open ground installation, multi-Si","RoW",𝐏)
@@ -477,8 +478,8 @@ module Main
         fig = plt.figure(figsize=(11,11))
         ax1 = fig.add_subplot(221, projection="polar")
         ax2 = fig.add_subplot(222, projection="polar")
-        ax3 = fig.add_subplot(223, projection="polar")
-        ax4 = fig.add_subplot(224, projection="polar")
+        # ax3 = fig.add_subplot(223, projection="polar")
+        # ax4 = fig.add_subplot(224, projection="polar")
 
         function Fig4a(ax;inter=true,legd=true)
             respath4=mkpath(respath*"/Fig4/")*"/"
@@ -544,7 +545,7 @@ module Main
             x95=hcat(xᵉˡᵉᶜᵗʳᵒˡʸˢⁱˢ_plot_95,xᵇᶦᵒ_plot_95,xᶠᵒˢˢⁱˡ⁻ᶜᶜˢ_plot_95)|> vec
 
             _,legds=pbplot(x50,x95,x05,categories=categories,
-                            legend=["Electrolysis","Biomass","Fossil+CCS"], scale=7, minscale=-4, median_lw=0.8,axis=ax,pal=["#0a9396","#0a9396","#ee9b00",colors[2]])
+                            legend=["Electrolysis","Biomass","Fossil+CCS"], scale=8, minscale=-5, median_lw=0.8,axis=ax,pal=["#0a9396","#0a9396","#ee9b00",colors[2]])
                 
             if legd
                 ax.legend(handles=legds,loc="upper right",bbox_to_anchor=(1.12,0.1),prop=font_prop,frameon=false,ncol=1)
@@ -563,102 +564,102 @@ module Main
             writetable(dataf,workbook=respath4*"Fig4.xlsx",worksheet=sheetname[3]);
             
         end 
-        function Fig4b(ax;inter=true,legd=true)
-            respath4=mkpath(respath*"/Fig4/")*"/"
-            xbalanced=opti(interactions=inter,
-                        result_format=:response,
-                        stochastic=true,
-                        impact_selection=6,
-                        dac=0,
-                        h2_leak=0,
-                        samples=samples,
-                        full_biomass=false,
-                        full_renewables=true
-                        )
-            xbalancedq05=quantile(xbalanced,0.05,dims=2)
-            xbalanced_plot_05=[reshape(xbalancedq05,10,6)[:,y] for y in 6:6]
-            xbalancedq50=quantile(xbalanced,0.5,dims=2)
-            xbalanced_plot_50=[reshape(xbalancedq50,10,6)[:,y] for y in 6:6]
-            xbalancedq95=quantile(xbalanced,0.95,dims=2)
-            xbalanced_plot_95=[reshape(xbalancedq95,10,6)[:,y] for y in 6:6]
+        # function Fig4b(ax;inter=true,legd=true)
+        #     respath4=mkpath(respath*"/Fig4/")*"/"
+        #     xbalanced=opti(interactions=inter,
+        #                 result_format=:response,
+        #                 stochastic=true,
+        #                 impact_selection=6,
+        #                 dac=0,
+        #                 h2_leak=0,
+        #                 samples=samples,
+        #                 full_biomass=false,
+        #                 full_renewables=true
+        #                 )
+        #     xbalancedq05=quantile(xbalanced,0.05,dims=2)
+        #     xbalanced_plot_05=[reshape(xbalancedq05,10,6)[:,y] for y in 6:6]
+        #     xbalancedq50=quantile(xbalanced,0.5,dims=2)
+        #     xbalanced_plot_50=[reshape(xbalancedq50,10,6)[:,y] for y in 6:6]
+        #     xbalancedq95=quantile(xbalanced,0.95,dims=2)
+        #     xbalanced_plot_95=[reshape(xbalancedq95,10,6)[:,y] for y in 6:6]
 
         
-            xclimate=opti(interactions=inter,
-                            result_format=:response,
-                            stochastic=true,
-                            climate_impact=true,
-                            biosphere_integrity_impact=false,
-                            human_interact=human_interact,
-                            dac=0,
-                            h2_leak=0,
-                            samples=samples,
-                            full_electrolysis=false,
-                            full_renewables=true
-                            )
-            xclimateq05=quantile(xclimate,0.05,dims=2)
-            xclimate_plot_05=[reshape(xclimateq05,10,6)[:,y] for y in 6:6]
-            xclimateq50=quantile(xclimate,0.5,dims=2)
-            xclimate_plot_50=[reshape(xclimateq50,10,6)[:,y] for y in 6:6]
-            xclimateq95=quantile(xclimate,0.95,dims=2)
-            xclimate_plot_95=[reshape(xclimateq95,10,6)[:,y] for y in 6:6]
+        #     xclimate=opti(interactions=inter,
+        #                     result_format=:response,
+        #                     stochastic=true,
+        #                     climate_impact=true,
+        #                     biosphere_integrity_impact=false,
+        #                     human_interact=human_interact,
+        #                     dac=0,
+        #                     h2_leak=0,
+        #                     samples=samples,
+        #                     full_electrolysis=false,
+        #                     full_renewables=true
+        #                     )
+        #     xclimateq05=quantile(xclimate,0.05,dims=2)
+        #     xclimate_plot_05=[reshape(xclimateq05,10,6)[:,y] for y in 6:6]
+        #     xclimateq50=quantile(xclimate,0.5,dims=2)
+        #     xclimate_plot_50=[reshape(xclimateq50,10,6)[:,y] for y in 6:6]
+        #     xclimateq95=quantile(xclimate,0.95,dims=2)
+        #     xclimate_plot_95=[reshape(xclimateq95,10,6)[:,y] for y in 6:6]
             
             
-            xbioint=opti(interactions=inter,
-                            result_format=:response,
-                            stochastic=true,
-                            human_interact=human_interact,
-                            dac=0,
-                            h2_leak=0,
-                            biosphere_integrity_impact=true,
-                            samples=samples,
-                            full_fossil_ccs=true,
-                            full_renewables=true
-                            )
+        #     xbioint=opti(interactions=inter,
+        #                     result_format=:response,
+        #                     stochastic=true,
+        #                     human_interact=human_interact,
+        #                     dac=0,
+        #                     h2_leak=0,
+        #                     biosphere_integrity_impact=true,
+        #                     samples=samples,
+        #                     full_fossil_ccs=true,
+        #                     full_renewables=true
+        #                     )
 
-            xbiointq05=quantile(xbioint,0.05,dims=2)
-            xbioint_plot_05=[reshape(xbiointq05,10,6)[:,y] for y in 6:6]
-            xbiointq50=quantile(xbioint,0.5,dims=2)
-            xbioint_plot_50=[reshape(xbiointq50,10,6)[:,y] for y in 6:6]
-            xbiointq95=quantile(xbioint,0.95,dims=2)
-            xbioint_plot_95=[reshape(xbiointq95,10,6)[:,y] for y in 6:6]
+        #     xbiointq05=quantile(xbioint,0.05,dims=2)
+        #     xbioint_plot_05=[reshape(xbiointq05,10,6)[:,y] for y in 6:6]
+        #     xbiointq50=quantile(xbioint,0.5,dims=2)
+        #     xbioint_plot_50=[reshape(xbiointq50,10,6)[:,y] for y in 6:6]
+        #     xbiointq95=quantile(xbioint,0.95,dims=2)
+        #     xbioint_plot_95=[reshape(xbiointq95,10,6)[:,y] for y in 6:6]
             
 
-            x05=hcat(xbalanced_plot_05,xclimate_plot_05,xbioint_plot_05 )|> vec
-            x50=hcat(xbalanced_plot_50,xclimate_plot_50,xbioint_plot_50)|> vec
-            x95=hcat(xbalanced_plot_95,xclimate_plot_95,xbioint_plot_95)|> vec
+        #     x05=hcat(xbalanced_plot_05,xclimate_plot_05,xbioint_plot_05 )|> vec
+        #     x50=hcat(xbalanced_plot_50,xclimate_plot_50,xbioint_plot_50)|> vec
+        #     x95=hcat(xbalanced_plot_95,xclimate_plot_95,xbioint_plot_95)|> vec
 
-            _,legds=pbplot(x50,x95,x05,categories=categories,
-                            legend=["Biochemical\nPhosphorus","Climate","Biosphere\nintegrity"], scale=7, minscale=-4, median_lw=0.8,axis=ax,pal=["#0a9396",colors[17],colors[2],colors[6]])
-            if legd
-                ax.legend(handles=legds,loc="upper right",bbox_to_anchor=(1.13,0.12),prop=font_prop,frameon=false,ncol=1)
-            end
+        #     _,legds=pbplot(x50,x95,x05,categories=categories,
+        #                     legend=["Biochemical\nPhosphorus","Climate","Biosphere\nintegrity"], scale=7, minscale=-4, median_lw=0.8,axis=ax,pal=["#0a9396",colors[17],colors[2],colors[6]])
+        #     if legd
+        #         ax.legend(handles=legds,loc="upper right",bbox_to_anchor=(1.13,0.12),prop=font_prop,frameon=false,ncol=1)
+        #     end
 
-            sheetname=["Phosphorus","Climate","Biosphere"]
-            sheetname=inter ? "interactions_".*sheetname : sheetname
+        #     sheetname=["Phosphorus","Climate","Biosphere"]
+        #     sheetname=inter ? "interactions_".*sheetname : sheetname
 
-            f°=hcat(xbalanced_plot_05...,xbalanced_plot_50...,xbalanced_plot_95...)
-            dataf=DataFrame(hcat(categories,f°),["Category","q05","q50","q95"])
-            writetable(dataf,workbook=respath4*"Fig4.xlsx",worksheet=sheetname[1]);
+        #     f°=hcat(xbalanced_plot_05...,xbalanced_plot_50...,xbalanced_plot_95...)
+        #     dataf=DataFrame(hcat(categories,f°),["Category","q05","q50","q95"])
+        #     writetable(dataf,workbook=respath4*"Fig4.xlsx",worksheet=sheetname[1]);
 
-            f°=hcat(xbioint_plot_05...,xbioint_plot_50...,xbioint_plot_95...)
-            dataf=DataFrame(hcat(categories,f°),["Category","q05","q50","q95"])
-            writetable(dataf,workbook=respath4*"Fig4.xlsx",worksheet=sheetname[3]);
+        #     f°=hcat(xbioint_plot_05...,xbioint_plot_50...,xbioint_plot_95...)
+        #     dataf=DataFrame(hcat(categories,f°),["Category","q05","q50","q95"])
+        #     writetable(dataf,workbook=respath4*"Fig4.xlsx",worksheet=sheetname[3]);
 
-            f°=hcat(xclimate_plot_05...,xclimate_plot_50...,xclimate_plot_95...)
-            dataf=DataFrame(hcat(categories,f°),["Category","q05","q50","q95"])
-            writetable(dataf,workbook=respath4*"Fig4.xlsx",worksheet=sheetname[2]); 
-        end
+        #     f°=hcat(xclimate_plot_05...,xclimate_plot_50...,xclimate_plot_95...)
+        #     dataf=DataFrame(hcat(categories,f°),["Category","q05","q50","q95"])
+        #     writetable(dataf,workbook=respath4*"Fig4.xlsx",worksheet=sheetname[2]); 
+        # end
 
         Fig4a(ax2,legd=false)
-        Fig4b(ax4,legd=false)
+        # Fig4b(ax4,legd=false)
 
         Fig4a(ax1,inter=false)
-        Fig4b(ax3,inter=false)
+        # Fig4b(ax3,inter=false)
 
         ax1.set_title("(a)", font_properties=font_prop_titles)
         ax2.set_title("(b)", font_properties=font_prop_titles)
-        ax3.set_title("(c)", font_properties=font_prop_titles)
-        ax4.set_title("(d)", font_properties=font_prop_titles)
+        # ax3.set_title("(c)", font_properties=font_prop_titles)
+        # ax4.set_title("(d)", font_properties=font_prop_titles)
 
         fig.tight_layout()
         fig.savefig(respath4*"Fig4.svg",transparent=true, bbox_inches="tight")
@@ -817,7 +818,7 @@ module Main
                 human_interact=false,
                 dac=0,
                 h2_leak=0,
-                cutoff=0.02,step=2,legposa=-0.25,legposb=-0.25,q=0.65,contrib_year=2050)
+                cutoff=0.02,step=2,legposa=-0.25,legposb=-0.25,q=0.65,contrib_year=2050,project=𝐏2050)
         respath6=mkpath(respath*"/Fig6/")*"/"
         cmap = plt.get_cmap("tab20c")
         filename="Fig6"
@@ -864,7 +865,7 @@ module Main
                 rest=sum(cont,dims=2).-sum(cont[:,j_indices],dims=2)
                 res=hcat(cont[:,j_indices],rest).*100
 
-                labels=[getTcmAct(i,𝐏).act for i in j_indices]
+                labels=[getTcmAct(i,project).act for i in j_indices]
                 labels=vcat(labels, "Others")
                 df°=DataFrame(hcat(labels,res'),["Process", catnames...])
                 if isfile("Fig6.xlsx")
@@ -1196,4 +1197,3 @@ module Main
         plt.close("all")
     end
 end
-
