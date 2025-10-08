@@ -4,9 +4,10 @@
 *.tmp
 *.pdf
 *.pptx
+*.zip
 vscode/
 FAIR/
-Resumission/
+Resubmission/
 Storyboards/
 Versions/
 IPCC AR6 scenarios/
@@ -16,6 +17,7 @@ A_matrix_index.csv
 A_matrix.csv
 B_matrix_index.csv
 B_matrix.csv
+Tutorial/
 .ipynb_checkpoints
 .ipynb_checkpoints/
 IAM scenarios/

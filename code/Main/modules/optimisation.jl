@@ -1,11 +1,14 @@
-# Main script for the publication "Pathways to global hydrogen production within planetary boundaries"
-# - Author: Michaël Lejeune⁺[a,b], Sami Kara [a,b],Michael Zwicky Hauschild [d], Rahman Daiyan [b,c], 
+# Opitmisation script for the publication "Pathways to global hydrogen production within planetary boundaries"
+# - Author: Michaël Lejeune⁺[a,b], Sami Kara [a,b],Michael Zwicky Hauschild [d], Sareh Sharabi Rahman Daiyan [b,c], 
 # - Code maintainer author⁺ email: m.lejeune@unsw.edu.au
 # - Affiliations: 
     ## - a. Sustainability in Manufacturing and Life Cycle Engineering Research Group, School of Mechanical and Manufacturing Engineering, The University of New South Wales, Sydney 2052, Australia. 
     ## - b. Australian Research Council, Training Centre for the Global Hydrogen Economy, Sydney 2052, Australia. 
     ## - c. School of Minerals and Energy Engineering, The University of New South Wales, Sydney 2052, Australia. 
     ## - d. Centre for Absolute Sustainability, Technical University of Denmark, Kgs, Lyngby, Denmark.
+
+
+
 module optimisation
     export opti,𝐏,OptimisationStructb
     using JLD2
@@ -158,13 +161,12 @@ module optimisation
         return out
     end
 
-    #TODO: add fluctuations of efficiencies for electrolysis.
+    #efficiency gains for electrolysis technologies over time. from Wei et al. 2024
     η_electrolysis =[0.873239437	0.929577465	0.943661972	0.957746479	0.971830986	1
                     0.893333333	0.906666667	0.933333333	0.96	0.973333333	1
                     0.94047619	0.964285714	0.964285714	0.976190476	0.988095238	1
-                    0.94047619	0.964285714	0.964285714	0.976190476	0.988095238	1]#.*0.7
+                    0.94047619	0.964285714	0.964285714	0.976190476	0.988095238	1]
 
-    
 
     """
     # Function to minimise the planetary footprint of hydrogen production.
@@ -395,7 +397,7 @@ module optimisation
                 r_solarwind=modes.(δwindsol)[y]
                 𝐜 = 𝐜 ⊙ (1+h2_leak)
 
-                𝐀[𝕴ᴱᴸⱽ,[106,90,113,114]]=𝐀[𝕴ᴱᴸⱽ,[106,90,113,114]].*η_electrolysis[:,y]
+                𝐀[𝕴ᴱᴸⱽ,[106,90,113,114]]=𝐀[𝕴ᴱᴸⱽ,[106,90,113,114]].*η_electrolysis[:,y] #update electrolysis efficiencies
 
                 model=Model(optimizer_with_attributes(CPLEX.Optimizer))
                 set_silent(model)
@@ -405,7 +407,7 @@ module optimisation
                 @variable(model, 𝐟[1:size(𝐀,1)])
                 
                 # Expressions
-                @expression(model, 𝐠, 𝐠ᴴ² ⊕ 𝐁*𝐬) # 𝐠 = 𝐠ᴴ²+𝐁𝐬, Here we add potential hydrogen emissions from 0 to 0.3
+                @expression(model, 𝐠, 𝐠ᴴ² ⊕ 𝐁*𝐬) # 𝐠 = 𝐠ᴴ²+𝐁𝐬, Here we add potential hydrogen emissions
                 @expression(model, 𝐝, 𝐐*𝐠 ⊘ 𝛚) # 𝐝 = 𝐐𝐠 ⊘ 𝛚 -> Direct normalised impact.   
 
                 if  interactions
