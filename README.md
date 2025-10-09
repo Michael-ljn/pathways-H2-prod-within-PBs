@@ -36,6 +36,8 @@
 
 We provide in the [code ](./code/) used to generate results. However, we used an in-house software for data formatting and processing [lce.jl](https://github.com/Michael-ljn/lce.jl/), which is not publicly available yet. The software is currently hard to use for external users and undocumented. We recommend using [PULPO](https://github.com/flechtenberg/pulpo) which is already comprehensive enough to perform the analysis. That said, we are working on making [lce.jl](https://github.com/Michael-ljn/lce.jl/) open-source in the future. 
 
+Code used for the planetary boundary chart is available [here](https://github.com/Michael-ljn/planetary-boundaries-visualisation).
+
 ## **2. Results**
 All results can be found in [Source data Folder](./Source%20data/).
 
