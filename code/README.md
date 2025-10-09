@@ -20,18 +20,7 @@
 ---
 
 > [!CAUTION]<br>
-> This repository is currently being edited/drafted for peer review publication. Until a proper v2 release of the repository is available, all content should be considered as preliminary draft and may contain errors.
-
-This project is structured to highlight three main modeling categories: the definition of the total human impact (1), the direct human impact (2) and the role of planetary boundaries based prospective life cycle assessment(2). The overall table of content can be found below. 
-
-# Table of contents
-1. **[Definition of the total human impact $h$ on planetary boundaries](1_00_total_impact.ipynb)**
-2. **[Definition of the direct human impact](2_00_direct_human_impact.ipynb)**<br>
-    2.1 [Global safe operating space definition](2_01_global_SOS.ipynb)<br>
-    2.1 [Allocated safe operating space for global hydrogen production](2_02_allocated_space.ipynb)<br>
-3. **[Planetary boundaries based prospective life cycle assessment](3_00_PBLCA.ipynb)**<br>
-    3.1 [Premise of the study](3_01_premise.ipynb)<br>
-    3.2 [IAM scenario analysis](3_02_scenarios.ipynb)<br>
+> The underlying work for this repository is currently under review. Until the work is accepted for publication, all content should be considered as preliminary draft and may contain errors.
 
 
 

@@ -2,12 +2,18 @@ include("./general_utils/config.jl");
 include("./general_utils/ssp_utils.jl");
 using DataFrames, Interpolations,CSV
 
-respath = mkpath(config_respath* "2_02_allocated_space/")*"/";
-config_respath = mkpath(config_respath* "2_02_allocated_space/")*"/";
 
-# rcParams["axes.prop_cycle"] = plt.cycler("color",["#e32f27"
-#                                                 "#fca082"
-#                                                 "#3787c0"]);
+function writetable(table::DataFrame; worksheet="Model_Scenarios",workbook::String="output.xlsx")
+    if isfile(workbook)
+        XLSX.openxlsx(workbook, mode="rw") do xf
+                ws = XLSX.addsheet!(xf, worksheet)
+                XLSX.writetable!(ws, Tables.columntable(table))
+        end
+    else
+            XLSX.writetable(workbook, Tables.columntable(table), sheetname=worksheet)
+    end
+end
+
 """
     fill_missing!(df)
 In‑place: for each row of `df`, any missing entries are filled by linear
@@ -26,16 +32,6 @@ function fill_missing!(df::DataFrame)
             continue
         end
 
-        # # build a Gridded(Linear) interpolant…
-        # base_itp = interpolate((yrs[good],), Float64.(row[good]), Gridded(Linear()))
-        # # …and wrap it so it *extrapolates* linearly outside the domain
-        # itp      = extrapolate(base_itp, Line())
-
-        # # fill every missing slot
-        # for j in findall(ismissing, row)
-        #     mat[i, j] = itp(yrs[j])
-        # end
-
         itp = LinearInterpolation(
                                     Float64.(yrs[good]),             # x‑coords of known points
                                     Float64.(row[good]),             # y‑coords of known points
@@ -46,9 +42,6 @@ function fill_missing!(df::DataFrame)
         for j in findall(ismissing, row)
             mat[i, j] = itp( Float64(yrs[j]) )  # query at the missing year
         end
-
-        
-
 
     end
 
@@ -68,7 +61,6 @@ function add_gross_emissions_rows(df::DataFrame)
     # 3) Metadata = everything except "Variable" & the years
     meta_cols = setdiff(cols, vcat("Variable", year_cols))
 
-    # 4) Prepare an empty clone for the new rows
     gross = df[1:0, cols]
 
     # 5) Loop per metadata group
@@ -240,7 +232,7 @@ function add_secondary_energy_rows(df::DataFrame)
 end
 
 println("Reading AR6 scenarios...")
-AR6 = CSV.read("../Source data/01_input/IPCC AR6 dataset/AR6_Scenarios_Database_World_v1.1.csv", DataFrame);
+AR6 = CSV.read("./Source data/01_input/IPCC AR6 dataset/AR6_Scenarios_Database_World_v1.1.csv", DataFrame);
 
 println("Reading remind scenarios...")
 rmd_SSP1 = CSV.read(scenario_path*"remind_SSP1-PkBudg500.csv", DataFrame) # REMIND SSP1-pkbudg500

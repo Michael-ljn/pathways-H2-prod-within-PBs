@@ -9,6 +9,7 @@ vscode/
 FAIR/
 Resubmission/
 Storyboards/
+Storyboard/
 Versions/
 IPCC AR6 scenarios/
 Premise scenarios/
@@ -33,7 +34,9 @@ passkeys.py
 bookrun.sh
 /versionning
 other/
-
+.vscode/
+Code/Source data
+Code/Figures
 code/.vscode/
 code/export/
 *.log

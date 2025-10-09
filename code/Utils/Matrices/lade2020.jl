@@ -30,7 +30,7 @@ catlabels_lade= [ # Labels order from Lade et al. 2020
 
 𝐈=I(10) # Identity matrix
 
-# 𝐁 matrix for Biophysical interactions, # NOTE: Matrix arranged as 𝐁z⁺z, effect of columns on rows
+# 𝐁 ∈ ℝᵏᶻ matrix for Biophysical interactions, # NOTE: Matrix arranged to represent the effect of columns on rows
 𝐁 = [
     1.0     0.15    0.38    0.22    0.10    0.19    -0.07   -0.08   0       -0.06   # Climate Change
     0.22    1       0       0       0       0       0.08    0       0       0       # BI Land
@@ -44,11 +44,8 @@ catlabels_lade= [ # Labels order from Lade et al. 2020
     -0.11   0       0       0       0       0       0       0       0       1       # Strat. Ozone Deplet.
     ]'-𝐈 |>sparse
 
-# NOTE: Matrix arranged as 𝐁z⁺z, effect of columns on rows
-# 𝐁 = matformat(𝐁)'|>sparse # NOTE: Matrix arranged as 𝐁zz⁺, effect of rows on columns
     
-
-# 𝐑 matrix for Reactive human-mediated interactions # NOTE: Matrix arranged as 𝐑z⁺z, effect of columns on rows
+# 𝐑 ∈ ℝᵏᶻ matrix for Reactive human-mediated interactions # NOTE: Matrix arranged to represent the effect of columns on rows
 𝐑 = [
     1       0       0       0       0.05        0       0       0       0       0       # Climate Change
     0       1       0       0       0           0       0       0       0       0       # BI Land
@@ -61,11 +58,9 @@ catlabels_lade= [ # Labels order from Lade et al. 2020
     0       0       0       0       0           0       0       0       1       0       # Aerosol Loading
     0       0       0       0       0           0       0       0       0       1       # Strat. Ozone Deplet.
     ]'-𝐈 |>sparse
+    
 
-# NOTE: Matrix arranged as 𝐑z⁺z, effect of columns on rows
-# 𝐑 = matformat(𝐑)'|>sparse # NOTE: Matrix arranged as 𝐑zz⁺, effect of rows on columns
-
-# Define 𝐏 matrix for Parallel human drivers, # NOTE: Matrix arranged as 𝐏z⁺z, effect of columns on rows
+# 𝐏 ∈ ℝᶻᶻ matrix for Parallel human drivers, # NOTE: Matrix arranged to represent the effect of columns on rows
 𝐏 = [
     1       0       0       0       0       0       0.40        0.065       0       0       # Climate Change
     0       1       0       0       0       0       0           0           0       0       # BI Land
@@ -77,4 +72,4 @@ catlabels_lade= [ # Labels order from Lade et al. 2020
     0.018   0       0       0       0       0       0           1           0       0       # Freshwater Use
     0       0       0       0       0       0       0           0           1       0       # Aerosol Loading
     0.52    0       0       0       0       0       0           0           0       1       # Strat. Ozone Deplet.
-    ]'-𝐈 |>sparse # NOTE: Matrix arranged as 𝐏z⁺z, effect of columns on rows
+    ]'-𝐈 |>sparse

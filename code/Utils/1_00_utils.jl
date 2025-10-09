@@ -1,7 +1,5 @@
 include("./general_utils/config.jl");
 include("./matrices/lade2020.jl");
-respath=mkpath(config_respath*"/1_00_total_human_impact/")*"/";
-
 
 # Set up matplotlib parameters
 rcParams["ytick.right"] =false

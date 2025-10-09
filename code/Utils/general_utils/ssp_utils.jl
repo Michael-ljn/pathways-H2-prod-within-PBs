@@ -1,7 +1,5 @@
 using DataFrames,XLSX
-
-
-scenario_path="../Source data/01_input/IAM scenarios/"
+scenario_path="./Source data/01_input/IAM scenarios/"
 
 function getVals(Variable::String;
                 years::StepRange{Int64, Int64}=2020:1:2100,
@@ -72,40 +70,3 @@ function writetable(tables::Vector{DataFrame},worksheets::Vector{String};workboo
         end
     end
 end
-
-
-
-
-# """
-# Function to get values from SSP data for a specific variable and region
-# """
-# function get_vals(Variable::String;
-#                   years::StepRange{Int64, Int64}=2020:1:2100,
-#                   SSP::DataFrame)
-#     SSPa=filter(row -> row[:Variable] == Variable, SSP)
-#     return Float64.(SSPa[:,string.(years)]|> Matrix)
-# end
-
-# function expt_ASR_excel(ASR,ssp,scenar,range=["median","5th percentile","95th percentile"])
-#     filename = string(respath, "SSP", ssp, "/$(scenar)_ASR_results.xlsx")
-#     if isfile(filename)
-#         rm(filename)
-#     end
-#     for (asr,sc) in zip(ASR,range)
-#         df_ASR_res=DataFrame(hcat(catnames,hcat(asr[:,ssp]...)),:auto)
-#         rename!(df_ASR_res, [:Boundary, (Symbol(i) for i in 2025:5:2050)...])
-        
-#         if isfile(filename)
-#             XLSX.openxlsx(filename, mode="rw") do xf
-#                 if sc in XLSX.sheetnames(xf)
-#                     deletesheet!(xf, sc) 
-#                 end
-#                 ws = XLSX.addsheet!(xf, sc)
-#                 XLSX.writetable!(ws, Tables.columntable(df_ASR_res))
-#             end
-#         else
-#             XLSX.writetable(filename, Tables.columntable(df_ASR_res), sheetname=sc)
-#         end
-
-#     end
-# end
