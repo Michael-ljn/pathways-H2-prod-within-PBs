@@ -68,7 +68,7 @@ This folder contains all results generated in the paper. It is organised by by f
 - **[Supplementary Figure 8](./Supplementary%20Materials/Supplementary%20Figures/Supplementary%20Fig8/Supplementary%20Fig8.xlsx): Interaction matrices**
 - **[Supplementary Figure 11](./Supplementary%20Materials/Supplementary%20Figures/Supplementary%20Fig11/Supplementary%20Fig11.svg): Example of Technosphere matrix rectangulation**
 - **[Supplementary Figure 14](./Supplementary%20Materials/Supplementary%20Figures/Supplementary%20Fig14/Supplementary%20Fig14.svg): Hydrogen technology constrains**
-    - Note that we do not reproduce data from the AR6 scenario database. Scenario variables need to be extracted using the below which we futher split the data using proportions from Wei et al.(2024), these are available [here](../code/main/data/iea_data.jl).
+    - Note that we do not reproduce data from the AR6 scenario database. Scenario variables need to be extracted using the below which we futher split the data using proportions from Wei et al.(2024), these are available [here](../code/Main/data/iea_data.jl).
         - 'Secondary Energy|Hydrogen|Fossil|w/o CCS'
         - 'Secondary Energy|Hydrogen|Renewable (incl. biomass)'
         - 'Secondary Energy|Hydrogen|Electricity'

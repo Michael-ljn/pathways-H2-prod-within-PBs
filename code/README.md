@@ -27,11 +27,11 @@
 
 # Description of files
 
-0. [Main.ipynb](./0_Main.ipynb) is the notebook we use to run the analysis. It is based on [mainl.jl](./main/main.jl) where the code to generate figures is provided. The code should be relatively straightforward for Matplotlib users. The underlying code is described below:
+0. [Main.ipynb](./0_Main.ipynb) is the notebook we use to run the analysis. It is based on [mainl.jl](./Main/main.jl) where the code to generate figures is provided. The code should be relatively straightforward for Matplotlib users. The underlying code is described below:
 
-    - The inventory can be found here: [inventory.jl](./main/modules/inventories.jl).
-    - The optimisation code can be found here: [optimisation.jl](./main/modules/optimisation.jl). 
-    - For technology contraints, we used [constraints.jl](./main/modules/constraints.jl). 
+    - The inventory can be found here: [inventory.jl](./Main/modules/inventories.jl).
+    - The optimisation code can be found here: [optimisation.jl](./Main/modules/optimisation.jl). 
+    - For technology contraints, we used [constraints.jl](./Main/modules/constraints.jl). 
 
 1. Calculations for the global safe operating space and interaction matrices can be found in the [1_Planetary boundaries and interaction model.ipynb](./1_Planetary%20boundaries%20and%20interaction%20model.ipynb) notebook.
 
