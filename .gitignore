@@ -5,40 +5,46 @@
 *.pdf
 *.pptx
 *.zip
+
 vscode/
 FAIR/
 Resubmission/
 Storyboards/
 Storyboard/
 Versions/
+Tutorial/
 IPCC AR6 scenarios/
 Premise scenarios/
 edition/
-A_matrix_index.csv
-A_matrix.csv
-B_matrix_index.csv
-B_matrix.csv
-Tutorial/
-.ipynb_checkpoints
 .ipynb_checkpoints/
 IAM scenarios/
 IPCC AR6 dataset/
 IEA data/
 contraints/
+Code/Figures
+Code/.vscode/
+code/export/
+/versionning
+other/
+.vscode/
+
+
+
+A_matrix_index.csv
+A_matrix.csv
+B_matrix_index.csv
+B_matrix.csv
+.ipynb_checkpoints
 # 3_02_constraints.ipynb
 editorial_checklist.ipynb
 main.ipynb
 main_utils.jl
 passkeys.py
-# lce/
+
 bookrun.sh
-/versionning
-other/
-.vscode/
+
 Code/Source data
-Code/Figures
-code/.vscode/
-code/export/
+
 *.log
 # C extensions
 *.DS_Store

@@ -30,7 +30,7 @@ This repository contains the data and code used to generate the results of the p
 
 ## **1. Code availability**
 
-We provide in the [code ](./Code/) used to generate results. However, we used an in-house software for data formatting and processing [lce.jl](https://github.com/Michael-ljn/lce.jl/), which is not publicly available yet. The software is currently hard to use for external users and undocumented. We recommend using [PULPO](https://github.com/flechtenberg/pulpo) which is already comprehensive enough to perform the analysis. That said, we are working on making [lce.jl](https://github.com/Michael-ljn/lce.jl/) open-source in the future. 
+We provide in the [code ](./code/) used to generate results. However, we used an in-house software for data formatting and processing [lce.jl](https://github.com/Michael-ljn/lce.jl/), which is not publicly available yet. The software is currently hard to use for external users and undocumented. We recommend using [PULPO](https://github.com/flechtenberg/pulpo) which is already comprehensive enough to perform the analysis. That said, we are working on making [lce.jl](https://github.com/Michael-ljn/lce.jl/) open-source in the future. 
 
 ## **2. Results**
 All results can be found in [Source data Folder](./Source%20data/).
@@ -46,7 +46,7 @@ The data set can be filtered using [the list of scenarios considered](./Source%2
 
 ### **3.2 Premise scenario ensemble**
 
-We generated prospective life cycle assessment data using [Premise](https://github.com/polca/premise). The notebook used to generate scenarios is available [here](./Code/3_pLCA_data.ipynb). To run this code, you will need:
+We generated prospective life cycle assessment data using [Premise](https://github.com/polca/premise). The notebook used to generate scenarios is available [here](./code/3_pLCA_data.ipynb). To run this code, you will need:
 
 1. access to [ecoinvent](https://www.ecoinvent.org/) database (here we used 3.9.1).
 2. decryption key from the premise developers.
