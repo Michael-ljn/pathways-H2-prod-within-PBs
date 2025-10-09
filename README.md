@@ -1,6 +1,6 @@
 [![DOI](https://zenodo.org/badge/940091341.svg)](https://doi.org/10.5281/zenodo.14939868) <a href="https://www.globh2e.org.au/"><img src="https://img.shields.io/badge/ARC:Funding%20number-IC200100023-blue.svg"/></a>
 
-# **Pathways to global hydrogen production within planetary boundaries: Code repository**
+# **Pathways to global hydrogen production within planetary boundaries**
 
 <div style="text-align: left; font-size: 16px;">Michaël Lejeune<sup>a,b</sup>, Sami Kara<sup>a,b</sup>, Michael Zwicky Hauschild<sup>c,d</sup>, Sareh Sharabifarahni<sup>a</sup>, Rahman Daiyan<sup>b,e</sup></div><br>
 <div style="text-align: left; font-size: 13px;"><sup>a</sup>Sustainability in Manufacturing and Life Cycle Engineering Research Group, School of Mechanical and Manufacturing Engineering, the University of New South Wales, 2052, Sydney, Australia</div>
@@ -33,8 +33,6 @@
 
 > [!IMPORTANT]<br>
 > The underlying code [lce.jl](https://github.com/Michael-ljn/lce.jl) for data pre-processing is not provided in this repository. As demonstrated in the [Tutorial](./Tutorial/), the code is not required for reproducing the results. Therefore, access to this code can be provided upon reasonable request to the corresponding authors.
-
-<br>
 
 We provide in the [code ](./code/) used to generate results. However, we used an in-house software for data formatting and processing [lce.jl](https://github.com/Michael-ljn/lce.jl/), which is not publicly available yet. The software is currently hard to use for external users and undocumented. We recommend using [PULPO](https://github.com/flechtenberg/pulpo) which is already comprehensive enough to perform the analysis. That said, we are working on making [lce.jl](https://github.com/Michael-ljn/lce.jl/) open-source in the future. 
 

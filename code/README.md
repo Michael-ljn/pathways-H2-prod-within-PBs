@@ -27,7 +27,7 @@
 
 # Description of files
 
-0. [0_Main.ipynb](./0_Main.ipynb) is the notebook we use to run the analysis. It is based on [mainl.jl](./Main/main.jl) where the code to generate figures is provided. The code should be relatively straightforward for Matplotlib users. The underlying code is described below:
+0. [0_main.ipynb](./0_main.ipynb) is the notebook we use to run the analysis. It is based on [mainl.jl](./Main/main.jl) where the code to generate figures is provided. The code should be relatively straightforward for Matplotlib users. The underlying code is described below:
 
     - The inventory can be found here: [inventory.jl](./Main/modules/inventories.jl).
     - The optimisation code can be found here: [optimisation.jl](./Main/modules/optimisation.jl). 
