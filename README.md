@@ -31,10 +31,8 @@
 <br>
 
 
-![](./Source%20data/Fig2/Fig2.svg)
+![system boundaries](./Source%20data/Supplementary%20Materials/Other%20Figures/sys_boundaries.svg)
 
-
-![](./Source%20data/Fig3/Fig3.svg)
 
 ## **1. Code availability**
 
