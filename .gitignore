@@ -12,7 +12,6 @@ Resubmission/
 Storyboards/
 Storyboard/
 Versions/
-Tutorial/
 IPCC AR6 scenarios/
 Premise scenarios/
 edition/
@@ -28,7 +27,7 @@ code/export/
 other/
 .vscode/
 
-
+Tutorial/old/
 
 A_matrix_index.csv
 A_matrix.csv
