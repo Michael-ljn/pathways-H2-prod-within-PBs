@@ -51,12 +51,12 @@ This tutorial is self-contained and does not require any other code than what is
 4. Optimisation model (see equations 1-5) using JuMP.jl using Data from Lejeune et al. (2025)
 
 
-$$\min _{\text {s.t. } s } x = \Gamma d \tag{1}$$
+$$\min _{\text {s.t. } s } x = \Gamma d$$
 
-$$Q \tilde{ B } s \oslash \omega = d  \tag{2}$$
+<!-- $$Q \tilde{ B } s \oslash \omega = d  \tag{2}$$
 $$A^* s = f \tag{3}$$
 $$s ^{ j } \geq 0 \tag{4}$$
-$$s ^{el} \leq c ^{el} \tag{5}$$
+$$s ^{el} \leq c ^{el} \tag{5}$$ -->
 
 
 ## **2. Pre-requisites**
