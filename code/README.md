@@ -25,13 +25,13 @@
 > [!IMPORTANT]<br>
 > The underlying code [lce.jl](https://github.com/Michael-ljn/lce.jl) for data pre-processing is not provided in this repository. As demonstrated in the [Tutorial](./../Tutorial/), the code is not required for reproducing the results. Therefore, access to this code can be provided upon reasonable request to the corresponding authors.
 
-# File description
+# Description of files
 
 0. [Main.ipynb](./0_Main.ipynb) is the notebook we use to run the analysis. It is based on [mainl.jl](./main/main.jl) where the code to generate figures is provided. The code should be relatively straightforward for Matplotlib users. The underlying code is described below:
 
-  - The inventory can be found here: [inventory.jl](./main/modules/inventories.jl).
-  - The optimisation code can be found here: [optimisation.jl](./main/modules/optimisation.jl). 
-  - For technology contraints, we used [constraints.jl](./main/modules/constraints.jl). 
+    - The inventory can be found here: [inventory.jl](./main/modules/inventories.jl).
+    - The optimisation code can be found here: [optimisation.jl](./main/modules/optimisation.jl). 
+    - For technology contraints, we used [constraints.jl](./main/modules/constraints.jl). 
 
 1. Calculations for the global safe operating space and interaction matrices can be found in the [1_Planetary boundaries and interaction model.ipynb](./1_Planetary%20boundaries%20and%20interaction%20model.ipynb) notebook.
 

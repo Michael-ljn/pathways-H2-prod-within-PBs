@@ -17,16 +17,24 @@
 <div style="text-align: left; font-size: 13px;">
 <sup>e</sup>School of Minerals and Energy Engineering, The University of New South Wales, Sydney 2052, Australia</div>
 
+<br>
+
+> Available at: https://doi.org/10.21203/rs.3.rs-5917828/v1.
+
 ---
 > [!CAUTION]<br>
 > The underlying work for this repository is currently under review. Until the work is accepted for publication, all content should be considered as preliminary draft and may contain errors.
 
+> [!IMPORTANT]<br>
+> The underlying code [lce.jl](https://github.com/Michael-ljn/lce.jl) for data pre-processing is not provided in this repository. As demonstrated in the [Tutorial](./Tutorial/), the code is not required for reproducing the results. Therefore, access to this code can be provided upon reasonable request to the corresponding authors.
+
 <br>
 
-This repository contains the data and code used to generate the results of the paper:
 
->Lejeune, M. et al. (2025) ‘Pathways to global hydrogen production within planetary boundaries’. Research Square. Available at: https://doi.org/10.21203/rs.3.rs-5917828/v1. 
+![](./Source%20data/Fig2/Fig2.svg)
 
+
+![](./Source%20data/Fig3/Fig3.svg)
 
 ## **1. Code availability**
 
