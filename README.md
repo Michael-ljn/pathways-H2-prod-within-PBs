@@ -18,7 +18,6 @@
 <sup>e</sup>School of Minerals and Energy Engineering, The University of New South Wales, Sydney 2052, Australia</div>
 
 ---
-<br>
 > [!CAUTION]<br>
 > The underlying work for this repository is currently under review. Until the work is accepted for publication, all content should be considered as preliminary draft and may contain errors.
 
