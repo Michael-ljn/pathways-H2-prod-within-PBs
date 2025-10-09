@@ -4,29 +4,47 @@
 *.tmp
 *.pdf
 *.pptx
+*.zip
+
 vscode/
 FAIR/
+Resubmission/
+Storyboards/
+Storyboard/
+Versions/
+Tutorial/
 IPCC AR6 scenarios/
 Premise scenarios/
 edition/
+.ipynb_checkpoints/
+IAM scenarios/
+IPCC AR6 dataset/
+IEA data/
+contraints/
+Code/Figures
+Code/.vscode/
+code/export/
+/versionning
+other/
+.vscode/
+
+
+
 A_matrix_index.csv
 A_matrix.csv
 B_matrix_index.csv
 B_matrix.csv
 .ipynb_checkpoints
-.ipynb_checkpoints/
-
+# 3_02_constraints.ipynb
 editorial_checklist.ipynb
 main.ipynb
 main_utils.jl
 passkeys.py
 
 bookrun.sh
-/versionning
-other/
 
-code/.vscode/
-code/export/
+Code/Source data
+
 *.log
 # C extensions
 *.DS_Store
@@ -41,3 +59,13 @@ storyboards/
 _build/
 __pycache__/
 Scenario/
+co2.csv
+co2.txt
+tempe1.csv
+temperature_data.txt
+temperature.csv
+trash/
+co2_concentration.svg
+h2_emi.xlsx
+*.jld
+hydrogen_projects.ipynb

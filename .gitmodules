@@ -1,6 +1,7 @@
 [submodule "code/planetary-boundaries-visualisation"]
 	path = code/planetary-boundaries-visualisation
 	url = https://github.com/Michael-ljn/planetary-boundaries-visualisation.git
-[submodule "code/lca"]
-	path = code/lca
+[submodule "code/lce"]
+	path = code/lce
 	url = https://github.com/Michael-ljn/lce.jl.git
+	branch = natcom-paper
