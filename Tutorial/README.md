@@ -52,7 +52,6 @@ This tutorial is self-contained and does not require any other code than what is
 
 
 $$\min _{\text {s.t. } s } x = \Gamma d$$
-
 $$Q \tilde{ B } s \oslash \omega = d$$
 $$A^* s = f$$
 $$s ^{ j } \geq 0$$
