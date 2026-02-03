@@ -2,7 +2,7 @@
 *.bkp
 *.docx
 *.tmp
-*.pdf
+# *.pdf
 *.pptx
 *.zip
 
