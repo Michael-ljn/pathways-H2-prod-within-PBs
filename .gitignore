@@ -2,7 +2,7 @@
 *.bkp
 *.docx
 *.tmp
-*.pdf
+# *.pdf
 *.pptx
 *.zip
 
@@ -26,8 +26,8 @@ code/export/
 /versionning
 other/
 .vscode/
-
-
+MME_funding.pdf
+Proofs
 
 A_matrix_index.csv
 A_matrix.csv

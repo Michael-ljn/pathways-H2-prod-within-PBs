@@ -19,18 +19,16 @@
 
 <br>
 
-> Underlying publication: https://doi.org/10.21203/rs.3.rs-5917828/v1.
+> Underlying publication: Lejeune, M., Kara, S., Hauschild, M.Z. et al. Pathways to global hydrogen production within planetary boundaries. Nat Commun (2026). https://doi.org/10.1038/s41467-026-70168-x.
 
 ---
-> [!CAUTION]<br>
-> The underlying work for this repository is currently under review. Until the work is accepted for publication, all content should be considered as preliminary draft and may contain errors.
 
 ## **1. Introduction**
 
 The full tutorial is accessible [here](https://www.youtube.com/@globalhydrogeneconomytrain5404).
 
 This tutorial aims to provide sufficient information for the replication of:
-> Lejeune, M. et al. (2025) ‘Pathways to global hydrogen production within planetary boundaries’. Research Square. Available at: https://doi.org/10.21203/rs.3.rs-5917828/v1.
+> Lejeune, M., Kara, S., Hauschild, M.Z. et al. Pathways to global hydrogen production within planetary boundaries. Nat Commun (2026). https://doi.org/10.1038/s41467-026-70168-x.
 
 The tutorial provides a step-by-step guide to create a stochastic optimisation model using JuMP.jl and Activity-browser based on a simple case study for producing hydrogen via PEM electrolysis. The optimisation will focus on minimising the effective planetary footprint by selecting and scaling the optimal renewable energy technology mix. 
 

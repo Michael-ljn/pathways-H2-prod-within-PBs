@@ -19,12 +19,9 @@
 
 <br>
 
-> Available at: https://doi.org/10.21203/rs.3.rs-5917828/v1.
+> Available at: Lejeune, M., Kara, S., Hauschild, M.Z. et al. Pathways to global hydrogen production within planetary boundaries. Nat Commun (2026). https://doi.org/10.1038/s41467-026-70168-x.
 
 ---
-> [!CAUTION]<br>
-> The underlying work for this repository is currently under review. Until the work is accepted for publication, all content should be considered as preliminary draft and may contain errors.
-
 
 ![system boundaries](./Source%20data/Supplementary%20Materials/Other%20Figures/sys_boundaries.svg)
 
